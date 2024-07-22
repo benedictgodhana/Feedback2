@@ -1,0 +1,36 @@
+{
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "dev": "vite",
+        "build": "vite build"
+    },
+    "devDependencies": {
+        "@inertiajs/vue3": "^1.0.0",
+        "@tailwindcss/forms": "^0.5.3",
+        "@vitejs/plugin-vue": "^5.0.0",
+        "alpinejs": "^3.4.2",
+        "autoprefixer": "^10.4.12",
+        "axios": "^1.7.2",
+        "laravel-vite-plugin": "^1.0.0",
+        "postcss": "^8.4.31",
+        "tailwindcss": "^3.2.1",
+        "vite": "^5.0.0",
+        "vue": "^3.4.0"
+    },
+    "dependencies": {
+        "@inertiajs/inertia-vue3": "^0.6.0",
+        "@mdi/font": "^7.4.47",
+        "apexcharts": "^3.50.0",
+        "chart.js": "^4.4.3",
+        "file-saver": "^2.0.5",
+        "highcharts": "^11.4.6",
+        "highcharts-vue": "^2.0.1",
+        "jspdf": "^2.5.1",
+        "jspdf-autotable": "^3.8.2",
+        "vue-chartjs": "^5.3.1",
+        "vue3-apexcharts": "^1.5.3",
+        "vuetify": "^3.6.7",
+        "xlsx": "^0.18.5"
+    }
+}
