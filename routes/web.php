@@ -4,6 +4,7 @@
     use App\Http\Controllers\Auth\RegisteredUserController;
     use App\Http\Controllers\ProfileController;
     use App\Http\Controllers\ContributionController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FeedbackController;
 use Illuminate\Foundation\Application;
     use Illuminate\Support\Facades\Route;
@@ -11,8 +12,7 @@ use Illuminate\Foundation\Application;
     use App\Http\Controllers\UserController;
     use App\Http\Controllers\RoleController;
     use App\Http\Controllers\memberController;
-
-
+use App\Http\Controllers\SendEmailController;
 
     /*
     |--------------------------------------------------------------------------
@@ -38,6 +38,7 @@ use Illuminate\Foundation\Application;
         Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
         Route::get('/feedback/print', [FeedbackController::class, 'print'])->name('feedback.print');
         Route::get('/feedback/export', [FeedbackController::class, 'export'])->name('feedback.export');
+        Route::post('/feedback/{id}/reply', [FeedbackController::class, 'reply'])->name('feedback.reply');
 
         // Check if the user is an admin
 
@@ -46,18 +47,23 @@ use Illuminate\Foundation\Application;
 
     });
 
-    Route::middleware(['auth', 'role:member'])->group(function () {
+    Route::middleware(['auth', 'role:superadmin'])->group(function () {
 
 
 
         Route::get('/contribution', [memberController::class, 'contribution'])->name('contribution');
         Route::get('/notifications', [memberController::class, 'notifications'])->name('notifications');
         Route::get('/settings', [memberController::class, 'settings'])->name('settings');
+        Route::get('/dashboard', [DashboardController::class, 'index']);
 
+        Route::get('/manage-roles', [RoleController::class, 'index'])->name('roles.index');
 
-        Route::get('/dashboard', function () {
-            return Inertia::render('Dashboard');
-        })->name('dashboard');
+        Route::get('/manage-categories', [UserController::class, 'showcategories'])->name('categories.index');
+
+        Route::get('/manage-subcategories', [UserController::class, 'showsubcategories'])->name('subcategories.index');
+
+        Route::get('/users', [UserController::class, 'index'])->name('users.index');
+        Route::get('/contributions', [ContributionController::class, 'contribution'])->name('contributions.index');
 
 
     });
@@ -81,11 +87,7 @@ use Illuminate\Foundation\Application;
         Route::get('/feedback/category/{categoryId}', [FeedbackController::class, 'show'])->name('category.feedback');
 
 
-    Route::get('/users', [UserController::class, 'index'])->name('users.index');
-    Route::get('/contributions', [ContributionController::class, 'contribution'])->name('contributions.index');
 
-
-    Route::get('/manage-roles', [RoleController::class, 'index'])->name('roles.index');
 
 
     Route::get('/graph', [AdminController::class, 'graph']);
@@ -128,6 +130,8 @@ use Illuminate\Foundation\Application;
     Route::post('/register', [RegisteredUserController::class, 'store'])->name('register.store');
 
     Route::get('/give_feedback', [FeedbackController::class, 'GivefeedbackPage'])->name('feedback');
+    Route::post('/send-reply', [SendEmailController::class, 'sendReply'])->name('sendReply');
 
+    Route::post('/feedback', [FeedbackController::class, 'store'])->name('feedback.store');
 
     require __DIR__.'/auth.php';

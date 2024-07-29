@@ -10,8 +10,8 @@
         ></v-img>
 
         <div class="flex items-center">
-          <v-btn :href="route('feedback')" class="ms-4" style="text-transform: capitalize; color:white; background-color:orangered;">
-            <v-icon size="19">mdi-email</v-icon> Give Feedback
+          <v-btn :href="route('feedback')" class="ms-4" style="text-transform:none; color:white; background-color:orangered;">
+            <v-icon size="19">mdi-email</v-icon> Give feedback
           </v-btn>
 
           <template v-if="props.canLogin">

@@ -1,7 +1,7 @@
 <template>
     <Head title="Dashboard" />
 
-    <AdminLayout>
+    <AdminLayout :categories="categories">
       <v-container style="margin-top: -40px;">
         <!-- Main content of the page -->
         <v-card max-width="1500" elevation="0">
@@ -31,7 +31,7 @@
   <v-select
     v-model="selectedCategory"
     :items="formattedCategories"
-    item-text="name"
+    item-title="name"
     item-value="id"
     label="Filter by Category"
     dense
@@ -44,7 +44,7 @@
   <v-select
     v-model="selectedSubcategory"
     :items="filteredSubcategories"
-    item-text="name"
+    item-title="name"
     item-value="id"
     label="Filter by Subcategory"
     dense
@@ -166,17 +166,47 @@
             <v-card-text>
               <v-row>
                 <v-col cols="12" md="6">
-                  <v-text-field v-model="selectedFeedback.subject" label="Subject" readonly variant="outlined"></v-text-field>
+                  <v-text-field v-model="selectedFeedback.category.name" label="Feedback  Category" readonly variant="outlined"></v-text-field>
                 </v-col>
+                <v-col cols="12" md="6">
+                <v-text-field v-model="selectedFeedback.subcategory_id" label="Feedback Subcategory" readonly variant="outlined"></v-text-field>
+              </v-col>
+
+
                 <v-col cols="12" md="6">
                   <v-text-field v-model="selectedFeedback.name" label="Name" readonly variant="outlined"></v-text-field>
                 </v-col>
                 <v-col cols="12" md="6">
                   <v-text-field v-model="selectedFeedback.email" label="Email" readonly variant="outlined"></v-text-field>
                 </v-col>
+                <v-col cols="12" md="6">
+                  <v-text-field v-model="selectedFeedback.status" label="Feedback Status" readonly variant="outlined"></v-text-field>
+                </v-col>
+
+                <v-col cols="12" md="6">
+                  <v-text-field v-model="selectedFeedback.subject" label="Subject" readonly variant="outlined"></v-text-field>
+                </v-col>
                 <v-col cols="12">
                   <v-textarea v-model="selectedFeedback.feedback" label="Feedback" readonly variant="outlined"></v-textarea>
                 </v-col>
+                <v-col cols="12">
+                  <v-textarea    v-model="replyMessage"
+                                  label="Reply to the feedback"  variant="outlined"></v-textarea>
+                </v-col>
+
+
+                <v-col cols="12" v-if="selectedFeedback.email">
+                    <v-btn
+          @click="sendReply"
+          variant="tonal"
+          :loading="isLoading"
+          style="text-transform: capitalize; background-color: green; color: white"
+        >
+          <v-icon>mdi-email-outline</v-icon> Send Reply
+        </v-btn>
+              </v-col>
+
+
                 <!-- Add other fields as needed -->
               </v-row>
             </v-card-text>
@@ -214,14 +244,12 @@
     </AdminLayout>
   </template>
 <script>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed } from 'vue';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import { usePage, useForm } from '@inertiajs/vue3';
-import {  nextTick } from 'vue';
 import jsPDF from 'jspdf';
-import 'jspdf-autotable'; // Import jsPDF's autotable plugin if needed
+import 'jspdf-autotable';
 import * as XLSX from 'xlsx';
-
 
 export default {
   components: {
@@ -242,11 +270,12 @@ export default {
     ];
 
     const feedbacks = ref(props.feedbacks || []);
+    const feedbackcategories = ref(props.feedbackcategories || []);
     const categories = ref(props.categories || []);
-
     const selectedCategory = ref(null);
     const selectedSubcategory = ref(null);
     const search = ref('');
+    const replyMessage = ref('');
 
     const dialog = ref({
       add: false,
@@ -265,14 +294,14 @@ export default {
     const selectedFeedback = ref(null);
 
     const formattedCategories = computed(() => {
-      return categories.value.map(category => ({
+      return feedbackcategories.value.map(category => ({
         id: category.id,
         name: category.name
       }));
     });
 
     const filteredSubcategories = computed(() => {
-      const category = categories.value.find(cat => cat.id === selectedCategory.value);
+      const category = feedbackcategories.value.find(cat => cat.id === selectedCategory.value);
       return category ? category.subcategories.map(sub => ({
         id: sub.id,
         name: sub.name
@@ -292,13 +321,15 @@ export default {
     });
 
     const getSubcategoryName = (id) => {
-      const category = categories.value.find(cat => cat.subcategories.some(sub => sub.id === id));
+      const category = feedbackcategories.value.find(cat => cat.subcategories.some(sub => sub.id === id));
       const subcategory = category ? category.subcategories.find(sub => sub.id === id) : null;
       return subcategory ? subcategory.name : 'N/A';
     };
 
     const updateSubcategories = () => {
       selectedSubcategory.value = null;
+      const selectedCategoryObj = feedbackcategories.value.find(cat => cat.id === selectedCategory.value);
+      filteredSubcategories.value = selectedCategoryObj ? selectedCategoryObj.subcategories : [];
     };
 
     const resetFilters = () => {
@@ -306,6 +337,7 @@ export default {
       selectedSubcategory.value = null;
       search.value = '';
     };
+
     const printFeedback = () => {
       const doc = new jsPDF();
       const columns = [
@@ -317,7 +349,6 @@ export default {
         { header: 'Feedback', dataKey: 'feedback' }
       ];
 
-      // Prepare data for the PDF
       const rows = filteredFeedbacks.value.map(feedback => ({
         category: feedback.category ? feedback.category.name : 'N/A',
         subcategory: getSubcategoryName(feedback.subcategory_id),
@@ -327,11 +358,9 @@ export default {
         feedback: feedback.feedback
       }));
 
-      // Add a title
       doc.setFontSize(18);
       doc.text('All Feedback', 14, 22);
 
-      // Generate the table
       doc.autoTable({
         columns: columns,
         body: rows,
@@ -339,50 +368,38 @@ export default {
         styles: { overflow: 'linebreak' }
       });
 
-      // Print the PDF
       doc.autoPrint();
       window.open(doc.output('bloburl'), '_blank');
     };
 
-
     const exportFeedback = () => {
-    // Prepare data for the Excel sheet
-    const rows = filteredFeedbacks.value.map(feedback => ({
+      const rows = filteredFeedbacks.value.map(feedback => ({
         Category: feedback.category ? feedback.category.name : 'N/A',
         Subcategory: getSubcategoryName(feedback.subcategory_id),
         Name: feedback.name,
         Email: feedback.email,
         Subject: feedback.subject,
         Feedback: feedback.feedback
-    }));
+      }));
 
-    // Create a new workbook and worksheet
-    const ws = XLSX.utils.json_to_sheet(rows);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Feedback');
+      const ws = XLSX.utils.json_to_sheet(rows);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'Feedback');
 
-    // Generate Excel file
-    const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+      const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
 
-    // Create a Blob from the workbook
-    const blob = new Blob([wbout], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-
-    // Create a link element to trigger the download
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'feedbacks.xlsx';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    window.URL.revokeObjectURL(url);
-};
+      const blob = new Blob([wbout], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'feedbacks.xlsx';
+      a.click();
+      window.URL.revokeObjectURL(url);
+    };
 
     const saveFeedback = () => {
-      // Implementation for saving new feedback
       useForm(newFeedback.value).post('/feedback').then(() => {
         dialog.value.add = false;
-        // Optionally, refresh feedback list or show success message
       });
     };
 
@@ -392,29 +409,38 @@ export default {
     };
 
     const saveEdit = (feedback) => {
-      // Implementation for editing feedback
       useForm(feedback).put(`/feedback/${feedback.id}`).then(() => {
         dialog.value.edit = false;
-        // Optionally, refresh feedback list or show success message
       });
     };
 
     const confirmDelete = (feedback) => {
-      // Implementation for deleting feedback
       useForm().delete(`/feedback/${feedback.id}`).then(() => {
         dialog.value.delete = false;
-        // Optionally, refresh feedback list or show success message
       });
     };
 
-    onMounted(() => {
-      // Additional setup if necessary, e.g., fetching data
-    });
+    const sendReply = async () => {
+      if (!replyMessage.value) {
+        alert('Please enter a reply message.');
+        return;
+      }
+
+      try {
+        await useForm({ email: selectedFeedback.value.email, message: replyMessage.value }).post('/send-reply');
+        alert('Reply sent successfully.');
+        replyMessage.value = '';
+        dialog.value.view = false;
+      } catch (error) {
+        alert('Failed to send reply. Please try again.');
+        console.error('Error sending reply:', error);
+      }
+    };
 
     return {
       headers,
       feedbacks,
-      categories,
+      feedbackcategories,
       selectedCategory,
       selectedSubcategory,
       search,
@@ -432,10 +458,11 @@ export default {
       saveFeedback,
       openDialog,
       saveEdit,
-      confirmDelete
+      confirmDelete,
+      replyMessage,
+      sendReply,
+      categories,
     };
   }
 };
-
-
 </script>

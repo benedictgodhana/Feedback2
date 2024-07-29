@@ -1,196 +1,192 @@
-<script setup>
-import { ref } from 'vue';
-import ApplicationLogo from '@/Components/ApplicationLogo.vue';
-import Dropdown from '@/Components/Dropdown.vue';
-import DropdownLink from '@/Components/DropdownLink.vue';
-import NavLink from '@/Components/NavLink.vue';
-import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
-import { Link } from '@inertiajs/vue3';
-import {usePermission} from "@/Composables/permissions";
-
-const showingNavigationDropdown = ref(false);
-const {hasRole} = usePermission();
-</script>
-
 <template>
-    <div>
-        <div class="min-h-screen bg-gray-100" >
-            <nav class="bg-white border-b border-gray-100" style="background-color: darkblue;color:black;height:100px">
-                <!-- Primary Navigation Menu -->
-                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" >
-                    <div class="flex justify-between h-16" >
-                        <div class="flex">
-                            <!-- Logo -->
-                            <div class="shrink-0 flex items-center">
-                                <Link :href="route('dashboard')">
-                                    <ApplicationLogo
-                                        class="block h-9 w-auto fill-current text-gray-800"
-                                    />
-                                </Link>
-                            </div>
+    <v-app>
+    <!-- Navigation Drawer -->
+    <v-navigation-drawer
+        app
+        v-model="drawer"
+        fixed
+        :style="{ 'min-width': drawerWidth }"
+        elevation="0"
+        style="background-color: darkblue; color: white;"
+    >
+        <!-- Logo and Divider -->
+        <v-list-item>
+        <v-list-item-avatar>
+            <v-img src="Images/logo.png" alt="tailus logo" class="mt-13"></v-img>
+        </v-list-item-avatar>
+        </v-list-item>
+        <v-divider></v-divider>
 
-                            <!-- Navigation Links -->
-                            <!-- <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex" >
-                                <v-chip :href="route('dashboard')" :active="route().current('dashboard')" class="link mt-5"  style="background-color: orange;" label elevation="5" >
-                                    My Page
-                                </v-chip>
-                            </div> -->
+        <!-- Navigation Links -->
+        <v-list class="mt-10">
+        <v-list-item v-for="(item, i) in items" :key="i">
+            <NavLink :href="item.routeName" class="v-list-item" style="color: white;">
+            <template v-slot:default="{ href, isActive, isExactActive, isLink }">
+                <v-list-item-icon v-if="item.icon" class="list-item-icon">
+                <v-icon>{{ item.icon }}</v-icon>
+                </v-list-item-icon>
+                <v-list-item-content>
+                <v-list-item-title :class="{ 'primary--text': isExactActive }" v-text="item.text"></v-list-item-title>
+                </v-list-item-content>
+            </template>
+            </NavLink>
+        </v-list-item>
 
-                            <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex" >
-                                <v-chip :href="route('admin.index')" :active="route().current('dashboard')" class="link mt-5" v-if="hasRole('admin')" style="background-color: darkblue;" label elevation="5">
-                                    Dashboard
-                                </v-chip>
-                            </div>
-                            <!-- <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                                <NavLink :href="route('dashboard')" :active="route().current('dashboard')" class="link">
-                                    About us
-                                </NavLink>
-                            </div>
-                            <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                                <NavLink :href="route('dashboard')" :active="route().current('dashboard')" class="link">
-                                    Community updates
-                                </NavLink>
-                            </div>
-                            <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                                <NavLink :href="route('dashboard')" :active="route().current('dashboard')" class="link">
-                                    Members
-                                </NavLink>
-                            </div>
-                            <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                                <NavLink :href="route('dashboard')" :active="route().current('dashboard')" class="link">
-                                    Gallery
-                                </NavLink>
-                            </div>
+        <!-- Feedback Categories Accordion -->
+        <v-list-group
+            v-model="activeGroup"
+            prepend-icon="mdi-folder"
+            class="mt-2"
+        >
+            <template v-slot:activator="{ props }">
+            <v-list-item v-bind="props" title="My Feedback" prepend-icon="mdi-tag" color="white" active-class="active-button"></v-list-item>
+            </template>
 
-                            <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                                <NavLink :href="route('dashboard')" :active="route().current('dashboard')" class="link">
-                                    Contact Us
-                                </NavLink>
-                            </div> -->
-                        </div>
+            <!-- All Feedback Link -->
+            <v-list-item href="/all-feedback" prepend-icon="mdi-email" title="All Feedback" color="white" elevation="0" active-class="active-button"></v-list-item>
 
-                        <div class="hidden sm:flex sm:items-center sm:ms-6"     >
-                            <!-- Settings Dropdown -->
-                            <div class="ms-3 relative">
-                                <Dropdown align="right" width="48">
-                                    <template #trigger>
-                                        <span class="inline-flex rounded-md">
-                                            <v-chip
-                                            label
-                                                type="button"
-                                                style="background-color: darkblue;color:white"
-                                            >
-                                                {{ $page.props.auth.user.name }}
+            <!-- Feedback Categories -->
+            <v-list-item
+            v-for="(category, index) in categories"
+            :key="index"
+            @click="navigateToCategory(category.url)"
+            :prepend-icon="category.icon"
+            color="white"
+            elevation="0"
+            >
+            <v-list-item-content>
+                <v-list-item-title>{{ category.name }}</v-list-item-title>
+                <!-- Include additional category details if needed -->
+            </v-list-item-content>
+            </v-list-item>
+        </v-list-group>
+        </v-list>
+    </v-navigation-drawer>
 
-                                                <svg
-                                                    class="ms-2 -me-0.5 h-4 w-4"
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    viewBox="0 0 20 20"
-                                                    fill="currentColor"
-                                                >
-                                                    <path
-                                                        fill-rule="evenodd"
-                                                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                                                        clip-rule="evenodd"
-                                                    />
-                                                </svg>
-                                            </v-chip>
-                                        </span>
-                                    </template>
+    <!-- App Bar -->
+    <v-app-bar app class="border-b" height="90" elevation="2">
+        <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+        <v-toolbar-title style="white-space: normal;">
+        <span class="mr-2">Welcome</span> {{ $page.props.auth.user.name }} !
+        </v-toolbar-title>
 
-                                    <template #content>
-                                        <DropdownLink :href="route('profile.edit')" style="text-decoration: none;"> <v-icon>mdi-account</v-icon> Profile </DropdownLink>
-                                        <DropdownLink :href="route('logout')" method="post" as="button">
-                                           <v-icon>mdi-logout</v-icon> Log Out
-                                        </DropdownLink>
-                                    </template>
-                                </Dropdown>
-                            </div>
-                        </div>
+        <v-spacer></v-spacer>
 
-                        <!-- Hamburger -->
-                        <div class="-me-2 flex items-center sm:hidden" >
-                            <button
-                                @click="showingNavigationDropdown = !showingNavigationDropdown"
-                                class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out"
-                            >
-                                <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-                                    <path
-                                        :class="{
-                                            hidden: showingNavigationDropdown,
-                                            'inline-flex': !showingNavigationDropdown,
-                                        }"
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        stroke-width="2"
-                                        d="M4 6h16M4 12h16M4 18h16"
-                                    />
-                                    <path
-                                        :class="{
-                                            hidden: !showingNavigationDropdown,
-                                            'inline-flex': showingNavigationDropdown,
-                                        }"
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        stroke-width="2"
-                                        d="M6 18L18 6M6 6l12 12"
-                                    />
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-                </div>
+        <!-- Search Bar -->
+        <!-- <v-text-field
+        v-model="search"
+        prepend-inner-icon="mdi-magnify"
+        label="Search"
+        hide-details
+        class="hidden md:flex ma-4 mt-6"
+        variant="outlined"
+        ></v-text-field> -->
 
-                <!-- Responsive Navigation Menu -->
-                <div
-                    :class="{ block: showingNavigationDropdown, hidden: !showingNavigationDropdown }"
-                    class="sm:hidden"
-                >
-                    <div class="pt-2 pb-3 space-y-1">
-                        <ResponsiveNavLink :href="route('dashboard')" :active="route().current('dashboard')" class="link">
-                            Dashboard
-                        </ResponsiveNavLink>
-                    </div>
+        <v-chip label elevation="5" class="mr-4">
+        <v-switch
+            v-model="isDarkMode"
+            :label="isDarkMode ? 'Dark Mode' : 'Light Mode'"
+            @change="toggleTheme"
+            class="mt-6"
+        ></v-switch>
+        </v-chip>
+
+        <v-chip label elevation="5" :href="route('profile')" class="mr-4" style="background-color: darkblue; color:white;">
+        <v-icon>mdi-account</v-icon> My Profile
+        </v-chip>
+
+
+        <v-btn icon style="font-weight: 500; font-family: 'poppins'; text-transform:capitalize;" text  class="mr-4">
+        <v-icon size="28" style="padding:17px;">mdi-bell-outline</v-icon><span v-if="notificationCount > 0"  class="notification-count">20</span>
+        </v-btn>
 
 
 
-                    <!-- Responsive Settings Options -->
-                    <div class="pt-4 pb-1 border-t border-gray-200">
-                        <div class="px-4">
-                            <div class="font-medium text-base text-gray-800">
-                                {{ $page.props.auth.user.name }}
-                            </div>
-                            <div class="font-medium text-sm text-gray-500">{{ $page.props.auth.user.email }}</div>
-                        </div>
+        <v-chip label class="mr-4" elevation="5" style="background-color: red; color: red;" color="red">
+        <ResponsiveNavLink :href="route('logout')" method="post" as="button" style="color: white; background-color: red;">
+            <v-icon>mdi-logout</v-icon> Log Out
+        </ResponsiveNavLink>
+        </v-chip>
+    </v-app-bar>
 
-                        <div class="mt-3 space-y-1">
-                            <ResponsiveNavLink :href="route('profile.edit')" style="text-decoration: none;"> Profile </ResponsiveNavLink>
-                            <ResponsiveNavLink :href="route('logout')" method="post" as="button">
-                                Log Out
-                            </ResponsiveNavLink>
-                        </div>
-                    </div>
-                </div>
-            </nav>
-
-            <!-- Page Heading -->
-            <header class="bg-white shadow" v-if="$slots.header" >
-                <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8" >
-                    <slot name="header" />
-                </div>
-            </header>
-
-            <!-- Page Content -->
-            <main>
-                <slot />
-            </main>
-        </div>
-    </div>
+    <!-- Main Content Area -->
+    <v-main>
+        <v-container fluid class="mt-10">
+        <slot></slot>
+        </v-container>
+    </v-main>
+    </v-app>
 </template>
 
+<script setup>
+import { ref } from 'vue';
+import NavLink from '@/Components/NavLink.vue';
+import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
+import { useTheme } from 'vuetify';
+import { usePage } from '@inertiajs/inertia-vue3';
+import { Inertia } from '@inertiajs/inertia';
+
+const props = defineProps({
+categories: {
+type: Array,
+required: true,
+},
+
+});
+
+const theme = useTheme();
+
+function toggleTheme() {
+theme.global.name.value = theme.global.current.value.dark ? 'light':'dark';
+}
+
+const drawer = ref(true);
+const drawerWidth = '240px'; // Adjust as needed
+const search = ref('');
+const isDarkMode = ref(false);
+const activeGroup = ref(true); // Default to expanded
+
+function navigateTo(url) {
+Inertia.visit(url);
+}
+
+function navigateToCategory(url) {
+Inertia.visit(url);
+}
+
+const items = [
+{ text: 'Dashboard', routeName: 'dashboard', icon: 'mdi-view-dashboard' },
+{ text: 'Manage Roles', routeName: 'manage-roles', icon: 'mdi-account-key' },
+    { text: 'Manage Users', routeName: 'users', icon: 'mdi-account-multiple' },
+    { text: 'Manage Categories', routeName: 'manage-categories', icon: 'mdi-folder' },
+    { text: 'Manage Subcategories', routeName: 'manage-subcategories', icon: 'mdi-folder-outline' },
+];
+</script>
 <style scoped>
-.link{
-    color:white;
-    text-decoration: none;
+.v-main {
+    overflow-y: auto;
+    height: calc(100vh - 90px); /* Subtract the height of the app bar */
+}
+
+.list-item-icon {
+    margin-right: 16px; /* Adjust the space between the icon and the text */
+}
+
+.center-align {
+justify-content: center;
+}
+.notification-count {
+position: absolute;
+top: 6px; /* Adjust the vertical position */
+right: 10px; /* Adjust the horizontal position */
+background-color: red;
+color: white;
+border-radius: 50%; /* Make it a circle */
+width: 20px; /* Adjust size as needed */
+height: 20px; /* Adjust size as needed */
+font-size: 12px;
+display: flex;
+align-items: center;
+justify-content: center;
 }
 </style>

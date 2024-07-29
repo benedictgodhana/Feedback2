@@ -5,31 +5,34 @@ namespace App\Http\Middleware;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 use App\Models\FeedbackCategory;
+use Illuminate\Support\Facades\Log; // Import Log facade
 
 class HandleInertiaRequests extends Middleware
 {
-    /**
-     * The root template that is loaded on the first page visit.
-     *
-     * @var string
-     */
     protected $rootView = 'app';
 
-    /**
-     * Determine the current asset version.
-     */
     public function version(Request $request): string|null
     {
         return parent::version($request);
     }
 
-    /**
-     * Define the props that are shared by default.
-     *
-     * @return array<string, mixed>
-     */
     public function share(Request $request): array
     {
+        // Fetch categories
+        $categories = FeedbackCategory::all();
+        Log::info('Raw Categories:', $categories->toArray());
+
+        // Transform categories for frontend
+        $categoriesTransformed = $categories->map(function ($category) {
+            return [
+                'id' => $category->id,
+                'name' => $category->name,
+                'icon' => $category->icon ?? 'mdi-feedback', // Ensure 'icon' is defined in your model
+                'url' => route('category.feedback', ['categoryId' => $category->id]),
+            ];
+        })->toArray();
+        Log::info('Transformed Categories:', $categoriesTransformed);
+
         return array_merge(parent::share($request), [
             'auth' => [
                 'user' => function () use ($request) {
@@ -42,18 +45,7 @@ class HandleInertiaRequests extends Middleware
                     return null;
                 },
             ],
-            'categories' => function () {
-                return FeedbackCategory::all()->map(function ($category) {
-                    return [
-                        'id' => $category->id,
-                        'name' => $category->name,
-                        'icon' => $category->icon ?? 'mdi-feedback',
-                        'url' => route('category.feedback', ['categoryId' => $category->id]),
-                    ];
-                });
-            },
+            'feedbackCategories' => $categoriesTransformed, // Pass transformed categories
         ]);
     }
-
-
-    }
+}

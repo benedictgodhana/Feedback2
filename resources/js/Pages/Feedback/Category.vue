@@ -1,11 +1,11 @@
 <template>
   <Head title="Dashboard" />
 
-  <AdminLayout>
+  <AdminLayout :categories="categories">
     <v-container>
       <!-- Main content of the page -->
       <v-card max-width="1500" elevation="0">
-        <v-card-title class="text-center" style="background-color: darkblue; color: white; border-radius: 40px;">
+        <v-card-title class="text-center" style="background-color: orange; color: white; ">
           Feedback List for {{ categoryName.name}}
           <v-spacer></v-spacer>
         </v-card-title>
@@ -38,7 +38,7 @@
                 <v-select
       v-model="selectedSubcategory"
       :items="subcategories"
-      item-text="name"
+      item-title="name"
       item-value="id"
       label="Filter by Subcategory"
       dense
@@ -215,8 +215,7 @@
     </v-container>
   </AdminLayout>
 </template>
-
-<script>
+<script setup>
 import { ref, computed } from 'vue';
 import { usePage } from '@inertiajs/vue3';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
@@ -225,140 +224,121 @@ import jsPDF from 'jspdf';
 import 'jspdf-autotable'; // Import jsPDF's autotable plugin if needed
 import * as XLSX from 'xlsx';
 
-export default {
-  name: 'Dashboard',
-  components: {
-    AdminLayout,
-    Head,
-  },
-  data() {
-    return {
-      feedbacks: [], // Array to hold feedback data
-      selectedFeedback: {
-        subject: '',
-        name: '',
-        email: '',
-        feedback: '',
-        category_name: '', // Ensure category_name and subcategory_name are available
-        subcategory_name: ''
-      },
-      newFeedback: { // Data structure for adding new feedback
-        subject: '',
-        name: '',
-        email: '',
-        feedback: '',
-      },
-      headers: [
-        { title: 'Subject', value: 'subject' },
-        { title: 'Name', value: 'name'},
-        { title: 'Email', value: 'email' },
-        { title: 'Subcategory', value: 'subcategory_name' },
-        { title: 'Actions', value: 'actions', sortable: false },
-      ],
-      dialog: {
-        add: false,
-        edit: false,
-        view: false,
-        delete: false,
-      },
-      categoryName: '', // Placeholder for category name
-      selectedSubcategory: null, // Filter by subcategory
-      search: '', // Search term
-      subcategories: [] // Array to hold subcategories
-    };
-  },
-  created() {
-    const { props } = usePage();
-    this.feedbacks = props.feedbacks;
-    this.categoryName = props.category;
-    this.subcategories = props.subcategories;
-    this.subcategoryNames = this.subcategories.map(subcategory => subcategory.name);
 
-    // Ensure subcategories have the correct format
-    console.log('subcategories', this.subcategories);
-  },
-  computed: {
-  filteredFeedbacks() {
-    return this.feedbacks
-      .filter(feedback =>
-        (this.selectedSubcategory ? feedback.subcategory_id === this.selectedSubcategory : true) &&
-        (this.search ? feedback.subject.toLowerCase().includes(this.search.toLowerCase()) ||
-                      feedback.name.toLowerCase().includes(this.search.toLowerCase()) ||
-                      feedback.email.toLowerCase().includes(this.search.toLowerCase()) ||
-                      feedback.feedback.toLowerCase().includes(this.search.toLowerCase())
-                      : true)
-      )
-      .map(feedback => ({
-        ...feedback,
-        subcategory_name: feedback.subcategory ? feedback.subcategory.name : 'No Subcategory'
-      }));
-  }
-},
+const { props } = usePage();
 
-  methods: {
+// Define component name and layout
+const name = 'Dashboard';
+const components = { AdminLayout, Head };
+const categories = ref(props.categories || []);
 
-    getSubcategoryName(subcategoryId) {
-      const subcategory = this.subcategories.find(sub => sub.id === subcategoryId);
-      return subcategory ? subcategory.name : '';
-    },
-    openDialog(type, feedback) {
-      // Ensure the selected feedback has default values
-      this.selectedFeedback = feedback || {
-        subject: '',
-        name: '',
-        email: '',
-        feedback: '',
-        category_name: '',
-        subcategory_name: ''
-      };
+// Define reactive state variables
+const feedbacks = ref([]);
+const selectedFeedback = ref({
+  subject: '',
+  name: '',
+  email: '',
+  feedback: '',
+  category_name: '',
+  subcategory_name: ''
+});
+const newFeedback = ref({
+  subject: '',
+  name: '',
+  email: '',
+  feedback: ''
+});
+const headers = ref([
+  { title: 'Subject', value: 'subject' },
+  { title: 'Name', value: 'name' },
+  { title: 'Email', value: 'email' },
+  { title: 'Subcategory', value: 'subcategory_name' },
+  { title: 'Actions', value: 'actions', sortable: false }
+]);
+const dialog = ref({
+  add: false,
+  edit: false,
+  view: false,
+  delete: false
+});
+const categoryName = ref('');
+const selectedSubcategory = ref(null);
+const search = ref('');
+const subcategories = ref([]);
 
-      // Open the appropriate dialog based on type
-      this.dialog[type] = true;
-    },
+// Fetch initial data
+feedbacks.value = props.feedbacks;
+categoryName.value = props.category;
+subcategories.value = props.subcategories;
 
+// Computed properties
+const filteredFeedbacks = computed(() => {
+  return feedbacks.value
+    .filter(feedback =>
+      (selectedSubcategory.value ? feedback.subcategory_id === selectedSubcategory.value : true) &&
+      (search.value ? feedback.subject.toLowerCase().includes(search.value.toLowerCase()) ||
+                    feedback.name.toLowerCase().includes(search.value.toLowerCase()) ||
+                    feedback.email.toLowerCase().includes(search.value.toLowerCase()) ||
+                    feedback.feedback.toLowerCase().includes(search.value.toLowerCase())
+                    : true)
+    )
+    .map(feedback => ({
+      ...feedback,
+      subcategory_name: feedback.subcategory ? feedback.subcategory.name : 'No Subcategory'
+    }));
+});
 
-    resetFilters() {
-    this.selectedSubcategory = null;
-    this.search = '';
-  },
-    saveFeedback() {
-      // Add logic to save the new feedback
-      console.log('Saving new feedback:', this.newFeedback);
-      this.dialog.add = false;
-    },
-    saveEdit(feedback) {
-      // Add logic to save the edited feedback
-      console.log('Saving edit for feedback:', feedback);
-      this.dialog.edit = false;
-    },
-    confirmDelete(feedback) {
-      // Add logic to delete the feedback
-      console.log('Deleting feedback:', feedback);
-      this.dialog.delete = false;
-    },
-    exportFeedback() {
+// Methods
+const getSubcategoryName = (subcategoryId) => {
+  const subcategory = subcategories.value.find(sub => sub.id === subcategoryId);
+  return subcategory ? subcategory.name : '';
+};
 
-  // Prepare data for the Excel sheet
-  const rows = this.filteredFeedbacks.map(feedback => ({
-    Subcategory: this.getSubcategoryName(feedback.subcategory_id),
+const openDialog = (type, feedback) => {
+  selectedFeedback.value = feedback || {
+    subject: '',
+    name: '',
+    email: '',
+    feedback: '',
+    category_name: '',
+    subcategory_name: ''
+  };
+  dialog.value[type] = true;
+};
+
+const resetFilters = () => {
+  selectedSubcategory.value = null;
+  search.value = '';
+};
+
+const saveFeedback = () => {
+  console.log('Saving new feedback:', newFeedback.value);
+  dialog.value.add = false;
+};
+
+const saveEdit = (feedback) => {
+  console.log('Saving edit for feedback:', feedback);
+  dialog.value.edit = false;
+};
+
+const confirmDelete = (feedback) => {
+  console.log('Deleting feedback:', feedback);
+  dialog.value.delete = false;
+};
+
+const exportFeedback = () => {
+  const rows = filteredFeedbacks.value.map(feedback => ({
+    Subcategory: getSubcategoryName(feedback.subcategory_id),
     Name: feedback.name,
     Email: feedback.email,
     Subject: feedback.subject,
     Feedback: feedback.feedback
   }));
-
-  // Create a new workbook and worksheet
   const ws = XLSX.utils.json_to_sheet(rows);
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, 'Feedback');
-
-  // Generate Excel file
   const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
-
-  // Create a Blob from the workbook
   const blob = new Blob([wbout], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-
-  // Create a link element to trigger the download
   const url = window.URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
@@ -367,8 +347,9 @@ export default {
   a.click();
   document.body.removeChild(a);
   window.URL.revokeObjectURL(url);
-},
-printFeedback() {
+};
+
+const printFeedback = () => {
   const doc = new jsPDF();
   const columns = [
     { header: 'Subcategory', dataKey: 'subcategory' },
@@ -377,45 +358,30 @@ printFeedback() {
     { header: 'Subject', dataKey: 'subject' },
     { header: 'Feedback', dataKey: 'feedback' }
   ];
-
-  // Prepare data for the PDF
-  const rows = this.filteredFeedbacks.map(feedback => ({
-    subcategory: this.getSubcategoryName(feedback.subcategory_id),
+  const rows = filteredFeedbacks.value.map(feedback => ({
+    subcategory: getSubcategoryName(feedback.subcategory_id),
     name: feedback.name,
     email: feedback.email,
     subject: feedback.subject,
     feedback: feedback.feedback
   }));
-
-  // Add a title with the category name
   doc.setFontSize(18);
-  doc.text(`All Feedback for ${this.categoryName.name}`, 14, 22);
-
-  // Generate the table
+  doc.text(`All Feedback for ${categoryName.value.name}`, 14, 22);
   doc.autoTable({
     columns: columns,
     body: rows,
     margin: { top: 30 },
     styles: { overflow: 'linebreak' }
   });
-
-  // Print the PDF
   doc.autoPrint();
   window.open(doc.output('bloburl'), '_blank');
-},
+};
 
-
-
-  resetFilters() {
-    this.selectedSubcategory = null;
-    this.search = '';
-  },
-    addFeedback() {
-      this.openDialog('add');
-    },
-  },
+const addFeedback = () => {
+  openDialog('add');
 };
 </script>
+
 
 <style scoped>
 /* Add scoped styles here */

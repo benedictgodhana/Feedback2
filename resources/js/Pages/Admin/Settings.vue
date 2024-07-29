@@ -1,6 +1,6 @@
 <template>
     <Head title="Dashboard" />
-    <AdminLayout>
+    <AdminLayout :categories="categories">
       <v-container width="100%" style="max-width: 1600px;">
         <v-row>
           <!-- Profile Card Section -->
@@ -309,6 +309,9 @@ const tab =ref(0)
 const user = usePage().props.auth.user;
 const userProfile = user ? user.userProfile || {} : {};
 const contributions = user ? user.contributions || [] : [];
+const { props } = usePage();
+
+const categories = ref(props.categories || []);
 
 const items = ref(contributions);
 

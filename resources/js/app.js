@@ -12,7 +12,7 @@ import HighchartsVue from 'highcharts-vue';
 
 import VueApexCharts from 'vue3-apexcharts'; // Import Vue3-ApexCharts
 
-const appName = import.meta.env.VITE_APP_NAME || 'SUBF';
+const appName = import.meta.env.VITE_APP_NAME || 'Ilabfeedback';
 
 createInertiaApp({
     title: (title) => `${title} - ${appName}`,

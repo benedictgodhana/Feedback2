@@ -44,8 +44,9 @@ class Feedback extends Model
         return $this->subcategory->name ?? null;
     }
 
+
     public function notifications()
     {
-        return $this->hasMany(Notification::class);
+        return $this->hasMany(Notification::class, 'feedback_id');
     }
 }

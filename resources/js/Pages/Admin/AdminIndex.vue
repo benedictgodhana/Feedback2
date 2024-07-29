@@ -1,7 +1,7 @@
 <template>
     <Head title="Dashboard" />
 
-    <AdminLayout>
+    <AdminLayout :categories="categories" >
         <v-container fluid>
             <v-row>
                 <!-- Feedback Cards -->

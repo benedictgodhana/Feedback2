@@ -10,6 +10,10 @@ use Inertia\Inertia;
 use TCPDF; // Import TCPDF directly
 use App\Exports\FeedbackExport;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Mail\FeedbackReceived;
+use App\Mail\FeedbackNotification;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\DB;
 class FeedbackController extends Controller
 {
     public function index()
@@ -44,10 +48,24 @@ class FeedbackController extends Controller
         // Fetch the subcategories associated with the category
         $subcategories = FeedbackSubcategory::where('feedback_category_id', $categoryId)->get();
 
+        $categories = FeedbackCategory::with('subcategories')->get();
+
+
+        $categoriesData = $categories->map(function ($category) {
+            return [
+                'name' => $category->name,
+                'feedback_count' => $category->feedbacks_count,
+                'icon' => $category->icon ?? 'mdi-comment', // Provide default icon if not set
+                'url' => route('category.feedback', ['categoryId' => $category->id]), // Use 'categoryId' here
+            ];
+        });
+
         return Inertia::render('Feedback/Category', [
             'category' => $category,
             'feedbacks' => $feedbacks,
-            'subcategories' => $subcategories
+            'subcategories' => $subcategories,
+            'categories' => $categoriesData,
+
         ]);
     }
 
@@ -60,9 +78,21 @@ class FeedbackController extends Controller
         // Fetch all categories with their subcategories
         $categories = FeedbackCategory::with('subcategories')->get();
 
+        $categoriesData = $categories->map(function ($category) {
+            return [
+                'name' => $category->name,
+                'feedback_count' => $category->feedbacks_count,
+                'icon' => $category->icon ?? 'mdi-comment', // Provide default icon if not set
+                'url' => route('category.feedback', ['categoryId' => $category->id]), // Use 'categoryId' here
+            ];
+        });
+
         return Inertia::render('Admin/AllFeedback', [
             'feedbacks' => $feedbacks,
-            'categories' => $categories,
+            'feedbackcategories' => $categories,
+            'categories' => $categoriesData,
+
+
         ]);
     }
     public function print(Request $request)
@@ -96,10 +126,81 @@ public function export()
         return Excel::download(new FeedbackExport, 'feedbacks.xlsx');
     }
 
-
-    public function GivefeedbackPage()
+    public function giveFeedbackPage()
     {
-        return Inertia::render('Feedback/GiveFeedback');
+        $categories = FeedbackCategory::with('subcategories')->get();
+        return Inertia::render('Feedback/GiveFeedback', [
+            'categories' => $categories,
+        ]);
     }
 
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'category_id' => 'required|integer',
+            'subject' => 'required|string',
+            'subcategory_id' => 'nullable|integer',
+            'name' => 'nullable|string',
+            'email' => 'nullable|email',
+            'feedback' => 'required|string',
+        ]);
+
+        try {
+            // Store feedback in the database
+            $feedback = Feedback::create($request->all());
+
+            // Send email to the user if email is provided
+            if ($request->filled('email')) {
+                Mail::to($request->email)
+                    ->send(new FeedbackReceived($request->all()));
+            }
+
+            // Send email to admin
+            Mail::to('benedict.dhadho@strathmore.edu')
+                ->send(new FeedbackNotification($request->all()));
+
+            // Create a notification record
+            DB::table('notifications')->insert([
+                'title' => 'New Feedback Received',
+                'message' => 'A new feedback has been submitted. Please review it.',
+                'feedback_id' => $feedback->id,
+                'created_at' => now(),
+                'updated_at' => now(),
+                'read' => false,
+            ]);
+
+            // Redirect with success message
+            return redirect()->route('feedback')->with('successMessage', 'Feedback submitted successfully!');
+        } catch (\Exception $e) {
+            // Handle any exceptions and redirect with an error message
+            return redirect()->route('feedback')->with('errorMessage', $e->getMessage() ?? 'An error occurred while submitting feedback.');
+        }
+    }
+
+
+    public function reply($id, Request $request)
+{
+    // Validate the request input
+    $request->validate([
+        'email' => 'required|email',
+        'message' => 'required|string',
+    ]);
+
+    // Extract input data
+    $email = $request->input('email');
+    $message = $request->input('message');
+
+    // Send the email
+    Mail::raw($message, function ($mail) use ($email) {
+        $mail->to($email)
+             ->subject('Reply to Your Feedback');
+    });
+
+    // Return a success response
+    return response()->json([
+        'status' => 'success',
+        'message' => 'Reply sent successfully.',
+    ], 200); // OK
+}
 }

@@ -9,7 +9,7 @@ use App\Models\Feedback;
 use App\Models\FeedbackCategory;
 use App\Models\User;
 use App\Models\Contribution;
-use Carbon\Carbon;
+use Carbon\Carbon;  
 use App\Models\Notification;
 
 class AdminController extends Controller
@@ -88,7 +88,25 @@ class AdminController extends Controller
 
     public function adminProfile(): Response
     {
-        return Inertia::render('Admin/Profile');
+        $categories = FeedbackCategory::with('subcategories')->get();
+
+        $notifications = Notification::with('feedback')->get();
+
+        $categoriesData = $categories->map(function ($category) {
+            return [
+                'name' => $category->name,
+                'feedback_count' => $category->feedbacks_count,
+                'icon' => $category->icon ?? 'mdi-comment', // Provide default icon if not set
+                'url' => route('category.feedback', ['categoryId' => $category->id]), // Use 'categoryId' here
+            ];
+        });
+        return Inertia::render('Admin/Profile',[
+            'categories' => $categoriesData,
+            'notifications'=>$notifications,
+
+        ]
+
+    );
     }
 
 
@@ -102,10 +120,23 @@ class AdminController extends Controller
     {
         $notifications = Notification::with(['feedback.category', 'feedback.subcategory'])->get();
         $feedbacks = Feedback::with(['category', 'subcategory'])->get(); // Ensure you have a Feedback model
+        $categories = FeedbackCategory::with('subcategories')->get();
+
+
+        $categoriesData = $categories->map(function ($category) {
+            return [
+                'name' => $category->name,
+                'feedback_count' => $category->feedbacks_count,
+                'icon' => $category->icon ?? 'mdi-comment', // Provide default icon if not set
+                'url' => route('category.feedback', ['categoryId' => $category->id]), // Use 'categoryId' here
+            ];
+        });
+
 
         return Inertia::render('Admin/Notifications', [
             'notifications' => $notifications,
             'feedbacks' => $feedbacks,
+            'categories' => $categoriesData,
         ]);
     }
 
@@ -113,7 +144,22 @@ class AdminController extends Controller
 
     public function adminSetting(): Response
     {
-        return Inertia::render('Admin/Settings');
+
+
+        $categories = FeedbackCategory::with('subcategories')->get();
+
+
+        $categoriesData = $categories->map(function ($category) {
+            return [
+                'name' => $category->name,
+                'feedback_count' => $category->feedbacks_count,
+                'icon' => $category->icon ?? 'mdi-comment', // Provide default icon if not set
+                'url' => route('category.feedback', ['categoryId' => $category->id]), // Use 'categoryId' here
+            ];
+        });
+        return Inertia::render('Admin/Settings',[
+            'categories'=>$categoriesData,
+        ]);
     }
 
 

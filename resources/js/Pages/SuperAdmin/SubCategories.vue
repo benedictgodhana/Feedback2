@@ -4,27 +4,27 @@
         <!-- Main content of the page -->
         <v-card max-width="1500" elevation="0">
           <v-card-title class="text-center" style="background-color: darkblue; color: white;border-radius: 40px;">
-            Roles Management
+            Subcategories Management
             <v-spacer></v-spacer>
             <!-- Import Button -->
           </v-card-title>
           <br>
 
           <v-card-text>
-            <v-chip color="red" @click="importRoles" class="mr-4" label elevation="5">
+            <v-chip color="red" @click="importSubcategories" class="mr-4" label elevation="5">
               <v-icon left>mdi-upload</v-icon> Import
             </v-chip>
             <!-- Print Button -->
-            <v-chip @click="printRoles" class="mr-4" label elevation="5">
+            <v-chip @click="printSubcategories" class="mr-4" label elevation="5">
               <v-icon left>mdi-printer</v-icon> Print
             </v-chip>
             <!-- Export Button -->
-            <v-chip color="green" @click="exportRoles" class="mr-4" label elevation="5">
+            <v-chip color="green" @click="exportSubcategories" class="mr-4" label elevation="5">
               <v-icon left>mdi-download</v-icon> Export
             </v-chip>
-            <!-- Add Role Button -->
-            <v-chip color="purple" @click="addRole" label elevation="5">
-              <v-icon left>mdi-account-plus</v-icon> Add Role
+            <!-- Add Subcategory Button -->
+            <v-chip color="purple" @click="addSubcategory" label elevation="5">
+              <v-icon left>mdi-folder-plus</v-icon> Add Subcategory
             </v-chip>
           </v-card-text>
           <v-divide></v-divide>
@@ -32,7 +32,7 @@
           <!-- Data Table -->
           <v-data-table
             :headers="headers"
-            :items="roles"
+            :items="subcategories"
             :items-per-page="10"
             class="elevation-0"
           >
@@ -50,7 +50,7 @@
                   </v-tooltip>
                 </template>
                 <v-card>
-                  <v-card-title>Edit Role</v-card-title>
+                  <v-card-title>Edit Subcategory</v-card-title>
                   <v-card-text>
                     <!-- Edit form or content here -->
                     <v-btn @click="saveEdit(item)">Save</v-btn>
@@ -72,7 +72,7 @@
                   </v-tooltip>
                 </template>
                 <v-card>
-                  <v-card-title>Delete Role</v-card-title>
+                  <v-card-title>Delete Subcategory</v-card-title>
                   <v-card-text>
                     <!-- Delete confirmation message -->
                     <div>Are you sure you want to delete "{{ item.name }}"?</div>
@@ -94,12 +94,12 @@
   import AdminLayout from '@/Layouts/AuthenticatedLayout.vue';
 
   const { props } = usePage();
-  const roles = ref(props.roles); // Assuming 'roles' prop is passed from backend
+  const subcategories = ref(props.subcategories); // Assuming 'subcategories' prop is passed from backend
 
   const headers = [
-    { title: 'ID', value: 'id' },
     { title: 'Name', value: 'name' },
-    { title: 'Guard Name', value: 'guard_name' },
+    { title: 'Description', value: 'description' },
+    { title: 'Category', value: 'category.name' }, // Assuming subcategories belong to categories
     { title: 'Actions', value: 'actions', sortable: false },
   ];
 
@@ -109,44 +109,43 @@
     delete: false,
   };
 
-  // Example function for editing a role
-  const saveEdit = (role) => {
+  // Example function for editing a subcategory
+  const saveEdit = (subcategory) => {
     // Implement your edit logic here
-    console.log('Saving edit:', role);
+    console.log('Saving edit:', subcategory);
     dialog.edit = false; // Close the dialog after saving
   };
 
-  // Example function for deleting a role
-  const confirmDelete = (role) => {
+  // Example function for deleting a subcategory
+  const confirmDelete = (subcategory) => {
     // Implement your delete logic here
-    console.log('Deleting role:', role);
+    console.log('Deleting subcategory:', subcategory);
     dialog.delete = false; // Close the dialog after deleting
   };
 
-  // Example function for importing roles
-  const importRoles = () => {
+  // Example function for importing subcategories
+  const importSubcategories = () => {
     // Implement your import logic here
-    console.log('Importing roles');
+    console.log('Importing subcategories');
   };
 
-  // Example function for printing roles
-  const printRoles = () => {
+  // Example function for printing subcategories
+  const printSubcategories = () => {
     // Implement your print logic here
-    console.log('Printing roles');
+    console.log('Printing subcategories');
   };
 
-  // Example function for exporting roles
-  const exportRoles = () => {
+  // Example function for exporting subcategories
+  const exportSubcategories = () => {
     // Implement your export logic here
-    console.log('Exporting roles');
+    console.log('Exporting subcategories');
   };
 
-  // Example function for adding a new role
-  const addRole = () => {
-    // Implement your add role logic here
-    console.log('Adding a new role');
+  // Example function for adding a new subcategory
+  const addSubcategory = () => {
+    // Implement your add subcategory logic here
+    console.log('Adding a new subcategory');
   };
-
   </script>
 
   <style scoped>
