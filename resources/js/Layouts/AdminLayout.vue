@@ -12,13 +12,13 @@
             <!-- Logo and Divider -->
             <v-list-item>
             <v-list-item-avatar>
-                <v-img src="Images/logo.png" alt="tailus logo" class="mt-13"></v-img>
+                <v-img src="/Images/iLab white Logo-01.png" alt="tailus logo"  ></v-img>
             </v-list-item-avatar>
             </v-list-item>
             <v-divider></v-divider>
 
             <!-- Navigation Links -->
-            <v-list class="mt-10">
+            <v-list >
             <v-list-item v-for="(item, i) in items" :key="i">
                 <NavLink :href="item.routeName" class="v-list-item" style="color: white;">
                 <template v-slot:default="{ href, isActive, isExactActive, isLink }">

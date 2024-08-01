@@ -73,7 +73,9 @@ class FeedbackController extends Controller
     public function AllFeedback(Request $request)
     {
         // Fetch feedbacks with related category and subcategory
-        $feedbacks = Feedback::with(['category', 'subcategory'])->get();
+        $feedbacks = Feedback::with(['category', 'subcategory'])
+        ->where('hidden', false)  // Filter out hidden feedback
+        ->get();
 
         // Fetch all categories with their subcategories
         $categories = FeedbackCategory::with('subcategories')->get();
@@ -150,15 +152,24 @@ public function export()
             // Store feedback in the database
             $feedback = Feedback::create($request->all());
 
+            // Retrieve category and subcategory names
+            $categoryName = FeedbackCategory::find($request->category_id)->name;
+            $subcategoryName = $request->subcategory_id ? FeedbackSubcategory::find($request->subcategory_id)->name : 'No Subcategory';
+
+            // Prepare feedback data with category and subcategory names
+            $feedbackData = $request->all();
+            $feedbackData['category_name'] = $categoryName;
+            $feedbackData['subcategory_name'] = $subcategoryName;
+
             // Send email to the user if email is provided
             if ($request->filled('email')) {
                 Mail::to($request->email)
-                    ->send(new FeedbackReceived($request->all()));
+                    ->send(new FeedbackReceived($feedbackData));
             }
 
             // Send email to admin
             Mail::to('benedict.dhadho@strathmore.edu')
-                ->send(new FeedbackNotification($request->all()));
+                ->send(new FeedbackNotification($feedbackData));
 
             // Create a notification record
             DB::table('notifications')->insert([
@@ -177,6 +188,7 @@ public function export()
             return redirect()->route('feedback')->with('errorMessage', $e->getMessage() ?? 'An error occurred while submitting feedback.');
         }
     }
+
 
 
     public function reply($id, Request $request)
@@ -203,4 +215,39 @@ public function export()
         'message' => 'Reply sent successfully.',
     ], 200); // OK
 }
+public function update(Request $request, $id)
+{
+    // Find the feedback by ID
+    $feedback = Feedback::find($id);
+
+    // Check if the feedback exists
+    if (!$feedback) {
+        return redirect()->back()->with('error', 'Feedback not found');
+    }
+
+    // Validate the request
+    $request->validate([
+        'status' => 'required|string'
+    ]);
+
+    // Update the feedback status
+    $feedback->status = $request->status;
+    $feedback->save();
+
+    // Redirect back with a success message
+    return redirect()->back()->with('success', 'Feedback status updated successfully');
+}
+public function archive($id)
+{
+    $feedback = Feedback::find($id);
+
+    if ($feedback) {
+        $feedback->hidden = true; // Assuming you have an 'archived' column
+        $feedback->save();
+        return response()->json(['message' => 'Feedback archived successfully.']);
+    }
+
+    return response()->json(['message' => 'Feedback not found.'], 404);
+}
+
 }

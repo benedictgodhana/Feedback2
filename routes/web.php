@@ -65,6 +65,11 @@ use App\Http\Controllers\SendEmailController;
         Route::get('/users', [UserController::class, 'index'])->name('users.index');
         Route::get('/contributions', [ContributionController::class, 'contribution'])->name('contributions.index');
 
+        Route::post('/users', [UserController::class, 'store']);
+
+        Route::delete('/users/{id}', [UserController::class, 'destroy']);
+
+
 
     });
 
@@ -81,12 +86,15 @@ use App\Http\Controllers\SendEmailController;
 
     Route::get('/my_settings',[AdminController::class,'adminSetting'])->name('adminsettings');
 
-
+// web.php
+    Route::put('/feedback/{id}', [FeedbackController::class, 'update']);
 
         // In web.php
-        Route::get('/feedback/category/{categoryId}', [FeedbackController::class, 'show'])->name('category.feedback');
+     Route::get('/feedback/category/{categoryId}', [FeedbackController::class, 'show'])->name('category.feedback');
 
 
+// routes/web.php or routes/api.php
+Route::put('/feedback/archive', [FeedbackController::class, 'archive']);
 
 
 

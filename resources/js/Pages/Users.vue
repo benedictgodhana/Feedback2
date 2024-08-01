@@ -25,6 +25,9 @@
               <v-icon left>mdi-account-plus</v-icon> Add a member
             </v-chip>
           </v-card-text>
+          <v-alert v-if="alert.visible" :type="alert.type" dismissible @click:close="alert.visible = false">
+    {{ alert.message }}
+  </v-alert>
           <v-divider></v-divider>
           <!-- Data Table -->
           <v-data-table
@@ -123,6 +126,14 @@
                 <v-col>
                   <v-btn @click="confirmDelete(selectedUser)" class="mr-4" style="text-transform: capitalize;" color="green" width="100%" rounded>
                     <v-icon>mdi-check</v-icon>Confirm
+
+                    <v-progress-circular
+                  v-if="loading"
+                  indeterminate
+                  color="white"
+                  size="24"
+                  class="mr-2"
+                ></v-progress-circular>
                   </v-btn>
                 </v-col>
                 <v-col>
@@ -148,7 +159,7 @@
                 <v-row>
                   <v-col cols="12" md="6">
                     <v-text-field
-                      v-model="newUser.name"
+                      v-model="newUserForm.name"
                       label="Name"
                       required
                       variant="underlined"
@@ -156,7 +167,7 @@
                   </v-col>
                   <v-col cols="12" md="6">
                     <v-text-field
-                      v-model="newUser.email"
+                      v-model="newUserForm.email"
                       label="Email"
                       required
                       variant="underlined"
@@ -165,7 +176,7 @@
                   </v-col>
                   <v-col cols="12" md="6">
                     <v-text-field
-                      v-model="newUser.password"
+                      v-model="newUserForm.password"
                       label="Password"
                       type="password"
                       required
@@ -174,19 +185,30 @@
                     ></v-text-field>
                   </v-col>
                   <v-col cols="12" md="6">
-                    <v-text-field
-                      v-model="newUser.roles"
-                      label="Roles"
-                      variant="underlined"
-                    
-                    ></v-text-field>
+                    <v-select
+                    v-model="newUserForm.roles"
+                    :items="roles"
+                    item-value="name"
+                    item-text="name"
+                    label="Roles"
+
+                    variant="underlined"
+                  ></v-select>
                   </v-col>
                 </v-row>
                 <v-row>
                   <v-col>
-                    <v-btn @click="saveUser" class="mr-4" width="100%" color="green">
-                      <v-icon>mdi-content-save</v-icon>Save
-                    </v-btn>
+                    <v-btn @click="saveUser" class="mr-4" width="100%" color="green" :disabled="loading">
+                <v-icon v-if="!loading">mdi-content-save</v-icon>
+                <v-progress-circular
+                  v-if="loading"
+                  indeterminate
+                  color="white"
+                  size="24"
+                  class="mr-2"
+                ></v-progress-circular>
+                Save
+              </v-btn>
                   </v-col>
                   <v-col>
                     <v-btn @click="dialog.add = false" width="100%" color="red">
@@ -195,6 +217,8 @@
                   </v-col>
                 </v-row>
               </v-form>
+
+
             </v-card-text>
           </v-card>
         </v-dialog>
@@ -204,106 +228,163 @@
   </template>
 <script>
 import { ref, computed } from 'vue';
-import { usePage } from '@inertiajs/vue3';
+import { usePage, useForm } from '@inertiajs/vue3';
 import AdminLayout from '@/Layouts/AuthenticatedLayout.vue';
 
 export default {
   components: {
     AdminLayout,
   },
-  data() {
-    return {
-      users: [],
-      selectedUser: {
-        name: '',
-        email: '',
-        roles: [],
-        profile: {
-          surname: '' // Add other default fields as needed
-        }
-      },
-      newUser: {
-        name: '',
-        email: '',
-        password: '',
-        roles: [],
-      },
-      headers: [
-        { title: 'ID', value: 'id' },
-        { title: 'Name', value: 'name' },
-        { title: 'Email', value: 'email' },
-        { title: 'Roles', value: 'roles' },
-        { title: 'Actions', value: 'actions', sortable: false },
-      ],
-      dialog: {
-        edit: false,
-        view: false,
-        delete: false,
-        add: false, // New dialog for adding users
-      },
-    };
-  },
-
-
-  created() {
-    const { props } = usePage();
-    this.users = props.users;
-  },
-  computed: {
-    formattedRoles() {
-      return this.selectedUser.roles ? this.selectedUser.roles.join(', ') : '';
-    }
-  },
   setup() {
     const { props } = usePage();
 
-    const formattedRoles = computed(() => {
-      return props.value.user.roles.join(', ');
+    // Reactive variables
+    const users = ref(props.users);
+    const roles = ref(props.roles);
+
+    const newUserForm = useForm({
+      name: '',
+      email: '',
+      password: '',
+      roles: [],
     });
 
-    return {
-      formattedRoles,
+    const deleteUserForm = useForm({});
+
+    const dialog = ref({
+      edit: false,
+      view: false,
+      delete: false,
+      add: false,
+    });
+
+    const alert = ref({
+      visible: false,
+      type: '',
+      message: '',
+    });
+
+    const loading = ref(false); // Add loading state
+
+    const formattedRoles = computed(() => {
+      return newUserForm.data.roles ? newUserForm.data.roles.join(', ') : '';
+    });
+
+    const saveUser = () => {
+        loading.value = true; // Set loading to true when starting the save process
+      newUserForm.post('/users', {
+        onSuccess: () => {
+          alert.value = {
+            visible: true,
+            type: 'success',
+            message: 'User added successfully!',
+          };
+
+          setTimeout(() => {
+            alert.value.visible = false;
+          }, 5000);
+
+          newUserForm.reset();
+          dialog.value.add = false; // Corrected to `dialog.value.add`
+          loading.value = false; // Reset loading state
+        },
+        onError: (errors) => {
+          console.log('Validation errors:', errors);
+          alert.value = {
+            visible: true,
+            type: 'error',
+            message: 'Failed to add user. Please check the form.',
+          };
+          loading.value = false; // Reset loading state
+        },
+      });
     };
-  },
-  methods: {
-    importUsers() {
-      console.log('Import Users');
-      // Implement import logic here
-    },
-    printUsers() {
-      console.log('Print Users');
-      // Implement print logic here
-    },
-    exportUsers() {
-      console.log('Export Users');
-      // Implement export logic here
-    },
-    openDialog(type, user) {
-      this.selectedUser = user;
-      if (type === 'edit') {
+
+
+
+    const confirmDelete = (user) => {
+      // Set the user ID in the deleteUserForm
+      deleteUserForm.data.id = user.id;
+
+      loading.value = true; // Show loading state
+      deleteUserForm.delete(`/users/${user.id}`, {
+        onSuccess: () => {
+          loading.value = false; // Hide loading state
+          dialog.value.delete = false; // Close the dialog
+          alert.value = {
+            visible: true,
+            message: 'User deleted successfully!',
+            type: 'success',
+          };
+
+          setTimeout(() => {
+            alert.value.visible = false;
+          }, 5000);
+
+          // Refresh the user list or remove the user from the local list
+          users.value = users.value.filter(u => u.id !== user.id);
+        },
+        onError: (errors) => {
+          loading.value = false; // Hide loading state
+          dialog.value.delete = false; // Close the dialog
+          alert.value = {
+            visible: true,
+            message: 'Failed to delete user!',
+            type: 'error',
+          };
+        },
+      });
+    };
+
+    return {
+
+        headers: [
+        { text: 'Name', value: 'name' },
+        { text: 'Email', value: 'email' },
+        { text: 'Roles', value: 'roles' },
+        { text: 'Actions', value: 'actions' },
+      ],
+        loading, // Return loading state
+      users,
+      roles,
+      selectedUser: {},
+      newUserForm,
+      dialog,
+      alert,
+      confirmDelete,
+      deleteUserForm,
+      formattedRoles,
+      saveUser,
+      // Other methods
+      importUsers() {
+        console.log('Import Users');
+        // Implement import logic here
+      },
+      printUsers() {
+        console.log('Print Users');
+        // Implement print logic here
+      },
+      exportUsers() {
+        console.log('Export Users');
+        // Implement export logic here
+      },
+      openDialog(action, user) {
+      this.selectedUser = { ...user };
+      if (action === 'edit') {
         this.dialog.edit = true;
-      } else if (type === 'view') {
+      } else if (action === 'view') {
         this.dialog.view = true;
-      } else if (type === 'delete') {
+      } else if (action === 'delete') {
         this.dialog.delete = true;
       }
     },
-    saveEdit(user) {
-      console.log('Save User Edit', user);
-      // Implement save logic here
-      this.dialog.edit = false;
-    },
-    confirmDelete(user) {
-      console.log('Delete User', user);
-      // Implement delete logic here
-      this.dialog.delete = false;
-    },
-    saveUser() {
-      // Add user logic
-      console.log('New User Data', this.newUser);
-      this.dialog.add = false;
-      // Implement save logic here
-    },
+      saveEdit(user) {
+        console.log('Save User Edit', user);
+        // Implement save logic here
+        dialog.value.edit = false;
+      },
+
+    };
   },
 };
 </script>
