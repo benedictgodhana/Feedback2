@@ -1,30 +1,28 @@
 <template>
-    <nav class="bg-gray-800 p-6 fixed w-full top-0 left-0 z-10 elevation-1" style="background-color: darkblue;">
+    <nav class="bg-gray-800 p-6 fixed w-full top-0 left-0 z-10 elevation-0" style="background-color: darkblue;">
       <div class="container mx-auto flex justify-between items-center">
         <!-- Logo -->
         <v-img
-          src="/Images/logo.png"
-          contain
-          max-width="160"
+          src="/Images/iLab white Logo-01.png"
           class="logo"
         ></v-img>
 
         <div class="flex items-center">
-          <v-btn :href="route('feedback')" class="ms-4" style="text-transform:none; color:white; background-color:orangered;">
-            <v-icon size="19">mdi-email</v-icon> Give feedback
-          </v-btn>
+          <Link :href="route('feedback')" class="ms-4 nav-link" style="text-decoration: none;font-weight: 900;text-transform:none;color:white">
+             Give feedback
+          </Link>
 
           <template v-if="props.canLogin">
-            <Link v-if="props.auth.user" :href="route('dashboard')" class="btn ms-4" style="text-transform: capitalize;">
+            <Link v-if="props.auth.user" :href="route('dashboard')" class="ms-4" style="text-decoration: none;font-weight: 900;text-transform: uppercase;">
               Dashboard
             </Link>
             <template v-else>
               <!-- <v-btn v-if="props.canRegister" :href="route('register')" class="btn ms-4" style="text-transform: capitalize; color:black; background-color:orangered;">
                 <v-icon size="19">mdi-account-plus</v-icon> Register
               </v-btn> -->
-              <v-btn :href="route('login')" class="ms-4" style="text-transform: capitalize; color:black;background-color: orange;" variant="outlined">
-                <v-icon size="19">mdi-login</v-icon> Log in
-              </v-btn>
+              <Link :href="route('login')" class="ms-4 nav-link" style="text-decoration: none;font-weight: 900;text-transform:none;color:white">
+                 Log in
+              </Link>
             </template>
           </template>
         </div>
@@ -54,7 +52,22 @@
   }
 
   .logo {
-    max-width: 150px; /* Adjust the size as needed */
+    max-width: 10px;
     height: auto;
   }
+
+
+  .nav-link {
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    transition: color 0.3s;
+  }
+
+  .nav-link:hover {
+    color: #ffb74d; /* Light orange color */
+  }
+
   </style>

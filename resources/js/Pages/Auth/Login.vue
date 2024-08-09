@@ -48,7 +48,7 @@ const submit = () => {
         <v-card max-width="500" width="100%" class="elevation-0 login-card">
             <!-- Logo -->
             <a href="/"> <v-img
-                src="/Images/University-Logo-Vertical-01.png"
+                src="/Images/LOGO_2.png"
                 contain
                 max-width="200"
                 class="mx-auto mt-4"
@@ -124,12 +124,7 @@ const submit = () => {
                                 Forgot your password?
                             </Link>
 
-                            <Link
-                                :href="route('register')"
-                                   class="forgot-password-link"
-                            >
-                                Don't have an account?
-                            </Link>
+                           
                         </v-col>
 
 

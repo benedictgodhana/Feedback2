@@ -7,10 +7,10 @@
                 <!-- Feedback Cards -->
                 <v-col cols="12" md="6" lg="3">
                     <v-card class="pa-3" elevation="14" rounded>
-                        <v-card-title style="background-color: darkblue; color:white">Today's Feedback</v-card-title>
+                        <v-card-title style="background-color: darkblue; color:white">All Feedback</v-card-title>
                         <v-divider></v-divider>
                         <v-card-text style="font-size:18px;font-weight: 700;">{{ totalFeedback }}</v-card-text>
-                        <v-btn width="100%" color="orange" style="text-transform: none;">View Today's Feedback</v-btn>
+                        <v-btn width="100%" color="orange" style="text-transform: none;" >View Today's Feedback</v-btn>
                     </v-card>
                 </v-col>
 

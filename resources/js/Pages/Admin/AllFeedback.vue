@@ -2,9 +2,9 @@
     <Head title="Dashboard" />
 
     <AdminLayout :categories="categories">
-        <v-container style="margin-top: -40px">
+        <v-container max-width="1900" style="margin-top: -40px">
             <!-- Main content of the page -->
-            <v-card max-width="1500" elevation="0">
+            <v-card width=100% elevation="0">
                 <v-card-title
                     class="text-center"
                     style="background-color: orange; color: white"
@@ -41,7 +41,6 @@
                         <v-icon left>mdi-restore</v-icon> Reset
                     </v-chip>
                 </v-card-text>
-                <v-divider></v-divider>
 
                 <!-- Filters and Search -->
                 <v-card-text>
@@ -71,7 +70,7 @@
                             ></v-select>
                         </v-col>
 
-                        <v-col cols="12" md="6">
+                        <v-col cols="12" md="3">
                             <v-text-field
                                 v-model="search"
                                 label="Search Feedback"
@@ -81,6 +80,17 @@
                             ></v-text-field>
                         </v-col>
 
+
+
+        <v-col cols="12" md="3">
+    <v-select
+        v-model="selectedStatus"
+        :items="statusOptions"
+        label="Feedback Status"
+        dense
+        variant="underlined"
+    ></v-select>
+</v-col>
 
                         <v-col cols="12" md="3">
             <v-text-field
@@ -104,15 +114,6 @@
             ></v-text-field>
         </v-col>
 
-        <v-col cols="12" md="3">
-    <v-select
-        v-model="selectedStatus"
-        :items="statusOptions"
-        label="Feedback Status"
-        dense
-        variant="underlined"
-    ></v-select>
-</v-col>
 
                     </v-row>
                 </v-card-text>

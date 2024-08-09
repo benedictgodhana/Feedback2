@@ -18,7 +18,7 @@
             <v-divider></v-divider>
 
             <!-- Navigation Links -->
-            <v-list >
+            <v-list nav >
             <v-list-item v-for="(item, i) in items" :key="i">
                 <NavLink :href="item.routeName" class="v-list-item" style="color: white;">
                 <template v-slot:default="{ href, isActive, isExactActive, isLink }">
@@ -60,6 +60,22 @@
                 </v-list-item-content>
                 </v-list-item>
             </v-list-group>
+
+            <v-list-group
+            v-model="activeSettingsGroup"
+            prepend-icon="mdi-cog"
+            class="mt-2"
+          >
+            <template v-slot:activator="{ props }">
+              <v-list-item v-bind="props" title="Settings" prepend-icon="mdi-cog" color="white" active-class="active-button"></v-list-item>
+            </template>
+
+            <v-list-item :href="route('adminsettings')" prepend-icon="mdi-account-settings" title="Account Settings" color="white" elevation="0" active-class="active-button"></v-list-item>
+            <v-list-item :href="route('adminnotification')" prepend-icon="mdi-bell" title="Notifications Settings" color="white" elevation="0" active-class="active-button"></v-list-item>
+            <v-list-item :href="route('profile')" prepend-icon="mdi-account" title="My profile" color="white" elevation="0" active-class="active-button"></v-list-item>
+
+
+          </v-list-group>
             </v-list>
         </v-navigation-drawer>
 
@@ -91,9 +107,7 @@
             ></v-switch>
             </v-chip>
 
-            <v-chip label elevation="5" :href="route('profile')" class="mr-4" style="background-color: darkblue; color:white;">
-            <v-icon>mdi-account</v-icon> My Profile
-            </v-chip>
+
 
 
             <v-btn icon style="font-weight: 500; font-family: 'poppins'; text-transform:capitalize;" text  class="mr-4">

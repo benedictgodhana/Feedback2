@@ -8,31 +8,14 @@
   <v-card class="profile-card" elevation="0" style="border: 1px solid #e0e0e0; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
     <v-card-text class="text-center py-4">
       <v-avatar size="200">
-        <img src="/Images/ben.jpg" alt="User Avatar" height="250">
+        <img src="/Images/male-avatar-icon.png" alt="User Avatar" height="250">
 
 
       </v-avatar>
       <v-card-text style="font-weight: 800;font-size: 19px;">
         {{ $page.props.auth.user.name }}
       </v-card-text>
-      <v-divider></v-divider>
-      <div class="mt-3">
-        <v-divider></v-divider>
-        <v-list class="mt-10">
-          <v-list-item v-for="(item, i) in links" :key="i">
-            <NavLink :href="item.routeName" class="v-list-item" style="color: black;">
-              <template v-slot:default="{ href, isActive, isExactActive, isLink }">
-                <v-list-item-icon v-if="item.icon" class="list-item-icon">
-                  <v-icon :icon="item.icon" style="color:darkblue"></v-icon>
-                </v-list-item-icon>
-                <v-list-item-content>
-                  <v-list-item-title :class="{ 'primary--text': isExactActive }" v-text="item.text"></v-list-item-title>
-                </v-list-item-content>
-              </template>
-            </NavLink>
-          </v-list-item>
-        </v-list>
-      </div>
+
     </v-card-text>
   </v-card>
 </v-col>
