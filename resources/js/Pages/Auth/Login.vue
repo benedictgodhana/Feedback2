@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from 'vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
-import { VContainer, VRow, VCol, VTextField, VCheckbox, VBtn, VAlert, VCard, VCardTitle, VCardText, VCardActions, VToolbar, VImg } from 'vuetify/components';
+import { VContainer, VRow, VCol, VTextField, VCheckbox, VBtn, VAlert, VCard, VCardTitle, VCardText, VCardActions, VToolbar, VImg, VFooter } from 'vuetify/components';
 
 defineProps({
     canResetPassword: {
@@ -42,17 +42,20 @@ const submit = () => {
 </script>
 
 <template>
-    <v-container class="d-flex justify-center align-center min-vh-100">
+    <v-app>    <v-container class="d-flex flex-column min-vh-100">
         <Head title="Log in" />
 
-        <v-card max-width="500" width="100%" class="elevation-0 login-card">
+        <!-- Main Content -->
+        <v-card max-width="500" width="100%" class="elevation-0 login-card mx-auto">
             <!-- Logo -->
-            <a href="/"> <v-img
-                src="/Images/LOGO_2.png"
-                contain
-                max-width="200"
-                class="mx-auto mt-4"
-            ></v-img></a>
+            <a href="/">
+                <v-img
+                    src="/Images/LOGO_2.png"
+                    contain
+                    max-width="200"
+                    class="mx-auto mt-4"
+                ></v-img>
+            </a>
 
             <v-card-text>
                 <div v-if="status" class="mb-4">
@@ -123,16 +126,22 @@ const submit = () => {
                             >
                                 Forgot your password?
                             </Link>
-
-                           
                         </v-col>
-
-
                     </v-row>
                 </form>
             </v-card-text>
+            <v-footer class="footer mt-auto" padless>
+            <v-container class="text-center">
+                <span>&copy; {{ new Date().getFullYear() }} @iLabAfrica. All rights reserved.</span>
+            </v-container>
+        </v-footer>
         </v-card>
+
+        <!-- Footer -->
+
     </v-container>
+</v-app>
+
 </template>
 
 <style>
@@ -142,6 +151,7 @@ const submit = () => {
 
 .login-card {
     border-radius: 5px;
+    margin-top: 180px;
 }
 
 .login-button {
@@ -165,5 +175,13 @@ const submit = () => {
     justify-content: center;
     font-size: 1.5rem;
     font-weight: bold;
+}
+
+/* Footer styles */
+.footer {
+    background-color:white;
+    padding: 10px 0;
+    color: gray;
+    font-size: 0.9rem;
 }
 </style>

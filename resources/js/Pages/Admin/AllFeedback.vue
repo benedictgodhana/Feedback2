@@ -311,103 +311,107 @@
             </v-dialog>
 
             <!-- View Dialog -->
-            <v-dialog v-model="dialog.view" max-width="800px">
-                <v-card width="800">
-                    <v-card-title
-                        style="background-color: orange"
-                        class="text-center"
-                        >View Feedback</v-card-title
-                    >
-                    <v-card-text>
-                        <v-row>
-                            <v-col cols="12" md="6">
-                                <v-text-field
-                                    v-model="selectedFeedback.category.name"
-                                    label="Feedback  Category"
-                                    readonly
-                                    variant="outlined"
-                                ></v-text-field>
-                            </v-col>
-                            <v-col cols="12" md="6">
-                                <v-text-field
-                                    v-model="selectedFeedback.subcategory.name"
-                                    label="Feedback Subcategory"
-                                    readonly
-                                    variant="outlined"
-                                ></v-text-field>
-                            </v-col>
+           <!-- View Dialog -->
+           <v-dialog v-model="dialog.view" max-width="800px">
+  <v-card width="800">
+    <v-toolbar color="white">
+        <v-card-title class="text-center" style="font-weight: 900">
+      View Feedback
+    </v-card-title>
+    <v-spacer></v-spacer>
+    <v-btn
+        icon
+        @click="dialog.view = false"
+      >
+        <v-icon>mdi-close</v-icon>
+      </v-btn>
+    </v-toolbar>
 
-                            <v-col cols="12" md="6">
-                                <v-text-field
-                                    v-model="selectedFeedback.name"
-                                    label="Name"
-                                    readonly
-                                    variant="outlined"
-                                ></v-text-field>
-                            </v-col>
-                            <v-col cols="12" md="6">
-                                <v-text-field
-                                    v-model="selectedFeedback.email"
-                                    label="Email"
-                                    readonly
-                                    variant="outlined"
-                                ></v-text-field>
-                            </v-col>
-                            <v-col cols="12" md="6">
-                                <v-text-field
-                                    v-model="selectedFeedback.status"
-                                    label="Feedback Status"
-                                    readonly
-                                    variant="outlined"
-                                ></v-text-field>
-                            </v-col>
+    <v-card-text>
+      <v-row>
+        <v-col cols="12" md="6">
+          <p class="mb-2"><strong>Feedback Category:</strong> {{ selectedFeedback.category.name }}</p>
+        </v-col>
+        <v-col cols="12" md="6">
+          <p class="mb-2"><strong>Feedback Subcategory:</strong> {{ selectedFeedback.subcategory.name }}</p>
+        </v-col>
 
-                            <v-col cols="12" md="6">
-                                <v-text-field
-                                    v-model="selectedFeedback.subject"
-                                    label="Subject"
-                                    readonly
-                                    variant="outlined"
-                                ></v-text-field>
-                            </v-col>
-                            <v-col cols="12">
-                                <v-textarea
-                                    v-model="selectedFeedback.feedback"
-                                    label="Feedback"
-                                    readonly
-                                    variant="outlined"
-                                ></v-textarea>
-                            </v-col>
-                            <v-col cols="12">
-                                <v-textarea
-                                v-if="selectedFeedback.email"
-                                    v-model="replyMessage"
-                                    label="Reply to the feedback"
-                                    variant="outlined"
-                                ></v-textarea>
-                            </v-col>
+        <v-col cols="12" md="6">
+          <p class="mb-2"><strong>Name:</strong> {{ selectedFeedback.name }}</p>
+        </v-col>
+        <v-col cols="12" md="6">
+          <p class="mb-2"><strong>Email:</strong> {{ selectedFeedback.email }}</p>
+        </v-col>
 
-                            <v-col cols="12" v-if="selectedFeedback.email">
-                                <v-btn
-                                    @click="sendReply"
-                                    variant="tonal"
-                                    :loading="loading"
-                                    style="
-                                        text-transform: capitalize;
-                                        background-color: green;
-                                        color: white;
-                                    "
-                                >
-                                    <v-icon>mdi-email-outline</v-icon> Send
-                                    Reply
-                                </v-btn>
-                            </v-col>
+        <!-- Feedback Status -->
+        <v-col cols="12" md="6">
+          <p class="mb-2"><strong>Current Feedback Status:</strong> {{ selectedFeedback.status }}</p>
+        </v-col>
 
-                            <!-- Add other fields as needed -->
-                        </v-row>
-                    </v-card-text>
-                </v-card>
-            </v-dialog>
+
+        <v-col cols="12" md="6">
+          <p class="mb-2"><strong>Subject:</strong> {{ selectedFeedback.subject }}</p>
+        </v-col>
+        <v-col cols="12">
+          <p class="mb-2"><strong>Feedback:</strong></p>
+          <p class="pl-2">{{ selectedFeedback.feedback }}</p>
+        </v-col>
+
+        <v-col cols="12" v-if="selectedFeedback.email">
+          <v-textarea
+            v-model="replyMessage"
+            label="Reply to the feedback"
+            variant="outlined"
+          ></v-textarea>
+        </v-col>
+
+        <v-col cols="12"   >
+          <v-select
+            v-model="selectedFeedback.status"
+            :items="['Pending', 'In Progress', 'Resolved']"
+            label="Update Status"
+            variant="outlined"
+          ></v-select>
+        </v-col>
+
+        <v-col cols="12" v-if="selectedFeedback.email">
+          <v-btn
+            @click="sendReply"
+            variant="tonal"
+            :loading="loading"
+            style="
+              text-transform: capitalize;
+              background-color: green;
+              color: white;
+            "
+          >
+            <v-icon>mdi-email-outline</v-icon> Send Reply
+          </v-btn>
+        </v-col>
+
+        <!-- Print and Export Buttons -->
+        <v-col cols="12" class="d-flex justify-end mt-4">
+          <v-btn
+            @click="exportSelectedFeedbackAsPDF"
+            variant="tonal"
+            style="text-transform: capitalize; margin-right: 8px;"
+            color="blue"
+          >
+            <v-icon left>mdi-printer</v-icon> Print
+          </v-btn>
+          <v-btn
+            @click="exportSelectedFeedback"
+            variant="tonal"
+            style="text-transform: capitalize;"
+            color="teal"
+          >
+            <v-icon left>mdi-file-export</v-icon> Export
+          </v-btn>
+        </v-col>
+      </v-row>
+    </v-card-text>
+  </v-card>
+</v-dialog>
 
             <!-- Delete Dialog -->
             <v-dialog v-model="dialog.delete" max-width="500px">
@@ -629,6 +633,42 @@ export default {
             window.open(doc.output("bloburl"), "_blank");
         };
 
+
+        const exportSelectedFeedback = () => {
+  if (!selectedFeedback.value || !selectedFeedback.value.category || !selectedFeedback.value.subcategory) {
+    console.error("Selected feedback or its required properties are missing.");
+    return;
+  }
+
+  const row = [{
+    Category: selectedFeedback.value.category?.name || "N/A",
+    Subcategory: getSubcategoryName(selectedFeedback.value.subcategory_id) || "N/A",
+    Name: selectedFeedback.value.name || "N/A",
+    Email: selectedFeedback.value.email || "N/A",
+    Subject: selectedFeedback.value.subject || "N/A",
+    Feedback: selectedFeedback.value.feedback || "N/A",
+    Status: selectedFeedback.value.status || "N/A",
+  }];
+
+  const ws = XLSX.utils.json_to_sheet(row);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "Feedback");
+
+  const wbout = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+
+  const blob = new Blob([wbout], {
+    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  });
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "selected_feedback.xlsx";
+  a.click();
+  window.URL.revokeObjectURL(url);
+};
+
+
+
         const exportFeedback = () => {
             const rows = filteredFeedbacks.value.map((feedback) => ({
                 Category: feedback.category ? feedback.category.name : "N/A",
@@ -677,9 +717,56 @@ export default {
         };
 
         const openDialog = (type, feedback) => {
-            selectedFeedback.value = feedback;
-            dialog.value[type] = true;
-        };
+  selectedFeedback.value = feedback;
+  console.log("Selected Feedback:", selectedFeedback.value);
+  dialog.value[type] = true;
+
+};
+
+
+
+
+
+
+const exportSelectedFeedbackAsPDF = () => {
+  if (!selectedFeedback.value || !selectedFeedback.value.category || !selectedFeedback.value.subcategory) {
+    console.error("Selected feedback or its required properties are missing.");
+    return;
+  }
+
+  const doc = new jsPDF();
+  const columns = [
+    { header: "Category", dataKey: "category" },
+    { header: "Subcategory", dataKey: "subcategory" },
+    { header: "Name", dataKey: "name" },
+    { header: "Email", dataKey: "email" },
+    { header: "Subject", dataKey: "subject" },
+    { header: "Feedback", dataKey: "feedback" },
+    { header: "Status", dataKey: "status" }
+  ];
+
+  const rows = [{
+    category: selectedFeedback.value.category?.name || "N/A",
+    subcategory: getSubcategoryName(selectedFeedback.value.subcategory_id) || "N/A",
+    name: selectedFeedback.value.name || "N/A",
+    email: selectedFeedback.value.email || "N/A",
+    subject: selectedFeedback.value.subject || "N/A",
+    feedback: selectedFeedback.value.feedback || "N/A",
+    status: selectedFeedback.value.status || "N/A"
+  }];
+
+  doc.setFontSize(18);
+  doc.text("Selected Feedback", 14, 22);
+
+  doc.autoTable({
+    columns: columns,
+    body: rows,
+    margin: { top: 30 },
+    styles: { overflow: "linebreak" }
+  });
+
+  doc.save("selected_feedback.pdf");
+};
 
         const updateStatus = (feedback, status) => {
             const updatedStatus = status;
@@ -828,6 +915,8 @@ export default {
             updateDateRange,
             selectedStatus,
             statusOptions,
+            exportSelectedFeedback,
+            exportSelectedFeedbackAsPDF
         };
     },
 };

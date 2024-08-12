@@ -114,6 +114,16 @@
     <v-toolbar-title class="ml-2">Notification Details</v-toolbar-title>
     <v-spacer></v-spacer>
 
+
+    <v-btn @click="exportNotificationAsExcel" class="text-black" variant="tonal" color="white" style="text-transform: capitalize;">
+                <v-icon color="blue">mdi-export</v-icon> Export
+            </v-btn>
+
+            <!-- Print Button -->
+            <v-btn @click="printNotification" class="text-black" variant="tonal" color="white" style="text-transform: capitalize;">
+                <v-icon color="blue">mdi-printer</v-icon> Print
+            </v-btn>
+
     <v-btn
         v-if="selectedNotification.feedback.email"
         @click="showReplyDialog = true"
@@ -321,6 +331,9 @@ import { usePage, useForm } from "@inertiajs/vue3";
 import { Head } from "@inertiajs/vue3";
 import AdminLayout from "@/Layouts/AdminLayout.vue";
 import NavLink from "@/Components/NavLink.vue";
+import * as XLSX from 'xlsx';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 
 const { notifications: initialNotifications } = usePage().props;
 
@@ -394,6 +407,80 @@ const formatDateTime = (dateString) => {
         second: "2-digit",
     };
     return date.toLocaleDateString("en-US", options);
+};
+
+
+
+const exportNotificationAsExcel = () => {
+  if (!selectedNotification.value) {
+    alert('No notification selected.');
+    return;
+  }
+
+  // Create a worksheet and a workbook
+  const ws = XLSX.utils.json_to_sheet([
+    {
+      'Date and Time': formatDateTime(selectedNotification.value.created_at),
+      'Subject': selectedNotification.value.feedback.subject,
+      'Name': selectedNotification.value.feedback.name || 'N/A',
+      'Email': selectedNotification.value.feedback.email || 'N/A',
+      'Category': selectedNotification.value.feedback.category.name || 'N/A',
+      'Subcategory': selectedNotification.value.feedback.subcategory.name || 'N/A',
+      'Feedback': selectedNotification.value.feedback.feedback || 'N/A',
+      'Status': selectedNotification.value.feedback.status || 'N/A',
+    }
+  ]);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Notification');
+
+  // Save the file
+  XLSX.writeFile(wb, 'NotificationDetails.xlsx');
+};
+
+
+const printNotification = () => {
+  if (!selectedNotification.value) {
+    alert('No notification selected.');
+    return;
+  }
+
+  // Create a new jsPDF instance
+  const doc = new jsPDF();
+
+  // Add title
+  doc.setFontSize(18);
+  doc.setTextColor(0, 0, 128); // Dark blue
+  doc.text('Notification Details', 14, 22);
+
+  // Define the table column headers and data
+  const columns = [
+    { header: 'Notification Title', dataKey: 'field' },
+    { header: 'Notification Details ', dataKey: 'value' }
+  ];
+
+  const data = [
+    { field: 'Date and Time', value: formatDateTime(selectedNotification.value.created_at) },
+    { field: 'Subject', value: selectedNotification.value.feedback.subject },
+    { field: 'Name', value: selectedNotification.value.feedback.name || 'N/A' },
+    { field: 'Email', value: selectedNotification.value.feedback.email || 'N/A' },
+    { field: 'Category', value: selectedNotification.value.feedback.category.name || 'N/A' },
+    { field: 'Subcategory', value: selectedNotification.value.feedback.subcategory.name || 'N/A' },
+    { field: 'Feedback', value: selectedNotification.value.feedback.feedback || 'N/A' },
+    { field: 'Status', value: selectedNotification.value.feedback.status || 'N/A' }
+  ];
+
+  // Add table to the PDF
+  doc.autoTable(columns, data, {
+    startY: 30,
+    margin: { top: 10 },
+    styles: { fontSize: 10 },
+    headStyles: { fillColor: [0, 0, 128], textColor: [255, 255, 255] }, // Dark blue header with white text
+    alternateRowStyles: { fillColor: [240, 240, 240] }, // Light grey rows
+    columnStyles: { field: { fontStyle: 'bold' } },
+  });
+
+  // Save the PDF
+  doc.save('notification-details.pdf');
 };
 
 const isRecent = (notification) => {
