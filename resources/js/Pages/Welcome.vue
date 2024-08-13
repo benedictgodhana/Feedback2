@@ -23,10 +23,7 @@
                         Welcome to @iLabAfrica Feedback System
                     </v-card-title>
                     <v-spacer></v-spacer>
-                    <v-img
-                src="/Images/LOGO_2.png"
-                alt="Logo"
-              ></v-img>
+                    
                 </v-toolbar>
 
                 <v-card-text class="text-center">
