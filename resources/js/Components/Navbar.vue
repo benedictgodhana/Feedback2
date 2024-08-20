@@ -1,73 +1,115 @@
 <template>
-    <nav class="bg-gray-800 p-6 fixed w-full top-0 left-0 z-10 elevation-0" style="background-color: darkblue;">
-      <div class="container mx-auto flex justify-between items-center">
-        <!-- Logo -->
-        <v-img
-          src="/Images/iLab white Logo-01.png"
-          class="logo"
-        ></v-img>
+    <!-- Navigation Drawer for Small Screens -->
+    <v-navigation-drawer
+      v-model="drawer"
+      app
+      temporary
+      right
+      disable-resize-watcher
+      color="orange"
+    >
+      <v-list nav>
 
-        <div class="flex items-center">
-          <Link :href="route('feedback')" class="ms-4 nav-link" style="text-decoration: none;font-weight: 900;text-transform:none;color:white">
-             Give feedback
-          </Link>
 
-          <template v-if="props.canLogin">
-            <Link v-if="props.auth.user" :href="route('dashboard')" class="ms-4" style="text-decoration: none;font-weight: 900;text-transform: uppercase;">
-              Dashboard
-            </Link>
-            <template v-else>
-              <!-- <v-btn v-if="props.canRegister" :href="route('register')" class="btn ms-4" style="text-transform: capitalize; color:black; background-color:orangered;">
-                <v-icon size="19">mdi-account-plus</v-icon> Register
-              </v-btn> -->
-              <Link :href="route('login')" class="ms-4 nav-link" style="text-decoration: none;font-weight: 900;text-transform:none;color:white">
-                 Log in
-              </Link>
-            </template>
-          </template>
-        </div>
-      </div>
-    </nav>
+        <v-divider></v-divider>
+        <v-list-item  prepend-icon="mdi-email" :href="route('feedback')">
+          <v-list-item-title>Give Feedback</v-list-item-title>
+        </v-list-item>
+        <v-list-item  prepend-icon="mdi-login" :href="route('login')">
+          <v-list-item-title>Login</v-list-item-title>
+        </v-list-item>
+
+      </v-list>
+    </v-navigation-drawer>
+
+    <!-- App Bar -->
+    <v-app-bar app  dark flat style="background-color: darkblue">
+      <v-container>
+        <v-row>
+          <!-- Left Section -->
+         <v-spacer></v-spacer>
+
+          <!-- Right Section -->
+          <v-col cols="12" sm="6" class="d-flex justify-end">
+            <v-btn text color="white" class="hidden-md-and-up" @click="drawer = !drawer">
+              <v-icon>mdi-menu</v-icon>
+            </v-btn>
+
+
+            <v-btn icon class="hidden-sm-and-down">
+              <v-icon color="white">mdi-help-circle-outline</v-icon>
+            </v-btn>
+            <v-btn icon class="hidden-sm-and-down">
+              <v-icon  color="white">mdi-magnify</v-icon>
+            </v-btn>
+            <v-btn icon class="hidden-sm-and-down">
+              <v-icon  color="white">mdi-web</v-icon>
+            </v-btn>
+          </v-col>
+        </v-row>
+      </v-container>
+    </v-app-bar>
+
+    <!-- Additional Navigation Bar -->
+    <v-app-bar app color="orange" flat dense class="hidden-sm-and-down">
+      <v-container>
+        <v-row>
+            <v-img src="/Images/LOGO_2.png" class="logo"  ></v-img>
+          <v-spacer></v-spacer>
+          <v-col >
+            <v-btn text :href="route('feedback')" style="text-transform: capitalize;font-weight: 800;background-color: darkblue;color:white" class="mr-4">Give feedback</v-btn>
+            <v-btn text :href="route('login')" style="text-transform: capitalize;font-size: 800;background-color: darkblue;color:white" >Login</v-btn>
+          </v-col>
+        </v-row>
+      </v-container>
+    </v-app-bar>
   </template>
+<script setup>
+import { ref } from 'vue';
+import {
+  VAppBar,
+  VBtn,
+  VIcon,
+  VContainer,
+  VRow,
+  VCol,
+  VImg,
+  VNavigationDrawer,
+  VList,
+  VListItem,
+  VListItemTitle,
+  VDivider
+} from 'vuetify/components';
 
-  <script setup>
-  import { Link, usePage } from '@inertiajs/vue3';
-  import { VImg, VBtn, VIcon } from 'vuetify/components';
+const drawer = ref(false);
+</script>
+<style scoped>
+.logo {
+  max-width: 120px;
+  height: auto;
+}
 
-  const { props } = usePage();
-  const { canLogin, canRegister } = props;
-  </script>
+.v-app-bar {
+  box-shadow: none;
+}
 
-  <style scoped>
-  .btn {
-    @apply inline-block px-4 py-2 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest bg-gray-800 hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150;
-  }
+.hidden-sm-and-down {
+  display: none;
+}
 
+@media (min-width: 600px) {
   .hidden-sm-and-down {
-    @apply hidden sm:inline-block;
+    display: inline-flex;
   }
+}
 
-  .ms-4 {
-    margin-left: 1rem;
+.hidden-md-and-up {
+  display: inline-flex;
+}
+
+@media (min-width: 960px) {
+  .hidden-md-and-up {
+    display: none;
   }
-
-  .logo {
-    max-width: 10px;
-    height: auto;
-  }
-
-
-  .nav-link {
-    color: white;
-    text-decoration: none;
-    font-weight: 500;
-    display: flex;
-    align-items: center;
-    transition: color 0.3s;
-  }
-
-  .nav-link:hover {
-    color: #ffb74d; /* Light orange color */
-  }
-
-  </style>
+}
+</style>

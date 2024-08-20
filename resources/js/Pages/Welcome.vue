@@ -1,111 +1,169 @@
 <template>
+    <v-app>
     <Navbar />
-    <div class="container">
-      <div class="panels-container">
-        <div class="panel left-panel">
-          <div class="content">
-            <div class="logo">
-              <img
-                src="/Images/iLab white Logo-01.png"
-                alt="Logo"
-                class="logo-image"
-              />
-            </div>
 
-          </div>
-        </div>
-        <div class="panel right-panel">
-            <v-container><
-            <v-card width="100%" max-width="1300" elevation="0">
 
-                <v-toolbar color="white" >
-                    <v-card-title style="font-weight: 900;">
-                        Welcome to @iLabAfrica Feedback System
-                    </v-card-title>
-                    <v-spacer></v-spacer>
-                    
-                </v-toolbar>
+    <v-container fluid>
+      <v-row
+  class="d-flex align-center justify-center"
+  style="background-image: url('/Images/male-worker-answering-telework-phone-call-center-using-audio-headset-microphone-young-man-working-customer-care-disability-friendly-office-handheld-shot-close-up.jpg'); background-size: cover; background-position: center; height: 800px; margin-top: 20px;background-color: rgba(0, 0, 0, 0.5);"
+>
+  <v-col
+    cols="12"
+    md="6"
+    class="text-white d-flex flex-column align-center justify-center"
+    style="padding: 100px 50px; background-color: rgba(0, 0, 0, 0.5);"
+  >
+    <v-card-title
+      class="text-center mb-5  animated-title"
+      style="font-size: clamp(16px, 4vw, 36px); font-weight: bold; line-height: 1.2;"
+    >
+      #Welcome to the @iLab Feedback System
+    </v-card-title>
+    <p class="text-center" style="font-size: clamp(14px, 2vw, 18px);">
+      Your voice matters. Share your thoughts, experiences, and feedback to help us improve and serve you better.
+    </p>
+  </v-col>
+</v-row>
 
-                <v-card-text class="text-center">
-          <v-row justify="start">
-            <v-col cols="12" md="6">
-              <v-card class="pa-4" outlined elevation="0" variant="outlined">
-                <v-icon size="28">mdi-lightbulb-outline</v-icon>
-                <v-card-title class="text-overline">Ideas</v-card-title>
-                <v-divider></v-divider>
-                <v-list-item
-                  lines="two"
-                  class="feedback-item"
-                  link
-                  style="background-color: darkblue;color:white"
-                >
-                  Share your great ideas with us
-                </v-list-item>
-              </v-card>
+
+      <!-- Popular Links Section -->
+      <v-row class="d-flex justify-center" style="background-color:darkblue; padding: 40px 0;">
+        <v-col cols="12" md="10">
+          <h3 class="text-center" style="color:white">Explore Feedback Categories</h3>
+          <br>
+          <v-row>
+            <v-col cols="12" md="3">
+              <h4  style="color:orange">System Performance</h4>
+              <ul class="footer-links">
+                <li><a href="#">Loading Issues</a></li>
+                <li><a href="#">Navigation Problems</a></li>
+                <li><a href="#">System Errors</a></li>
+                <li><a href="#">Other Issues</a></li>
+              </ul>
             </v-col>
-            <v-col cols="12" md="6">
-              <v-card class="pa-4" outlined elevation="0" variant="outlined">
-                <v-icon size="28">mdi-comment-check-outline</v-icon>
-                <v-card-title class="text-overline">Feedback</v-card-title>
-                <v-divider></v-divider>
-                <v-list-item
-                  lines="two"
-                  class="feedback-item"
-                  link
-                  style="background-color: darkblue;color:white"
-
-                >
-                  Provide feedback on your experiences
-                </v-list-item>
-              </v-card>
+            <v-col cols="12" md="3">
+              <h4 style="color:orange">User Experience</h4>
+              <ul class="footer-links">
+                <li><a href="#">UI Design</a></li>
+                <li><a href="#">User Interaction</a></li>
+                <li><a href="#">Accessibility</a></li>
+                <li><a href="#">Feedback & Suggestions</a></li>
+              </ul>
             </v-col>
-            <v-col cols="12" md="6">
-              <v-card class="pa-4" outlined elevation="0" variant="outlined">
-                <v-icon size="28">mdi-alert-circle-outline</v-icon>
-                <v-card-title class="text-overline">Issues</v-card-title>
-                <v-divider></v-divider>
-                <v-list-item
-                  lines="two"
-                  class="feedback-item"
-                  link
-                  style="background-color: darkblue;color:white"
-
-                >
-                  Report any issues you encounter
-                </v-list-item>
-              </v-card>
+            <v-col cols="12" md="3">
+              <h4 style="color:orange">Customer Support</h4>
+              <ul class="footer-links">
+                <li><a href="#">Response Time</a></li>
+                <li><a href="#">Support Quality</a></li>
+                <li><a href="#">Communication</a></li>
+                <li><a href="#">Follow-Up</a></li>
+              </ul>
             </v-col>
-            <v-col cols="12" md="6">
-              <v-card class="pa-4" outlined elevation="0" variant="outlined">
-                <v-icon size="28">mdi-help-circle-outline</v-icon>
-                <v-card-title class="text-overline">Suggestions</v-card-title>
-                <v-divider></v-divider>
-                <v-list-item
-                  lines="two"
-                  class="feedback-item"
-                  link
-                  style="background-color: darkblue;color:white"
-
-                >
-                  Share with us your valuable suggestions
-                </v-list-item>
-              </v-card>
+            <v-col cols="12" md="3">
+              <h4 style="color:orange">General Feedback</h4>
+              <ul class="footer-links">
+                <li><a href="#">Overall Satisfaction</a></li>
+                <li><a href="#">Improvement Areas</a></li>
+                <li><a href="#">Suggestions</a></li>
+                <li><a href="#">Other Comments</a></li>
+              </ul>
             </v-col>
           </v-row>
-          <v-btn width="100%"  color="orange" height="43px" text :href="route('feedback')"  elevation="5" class="mt-16">
-            <v-icon color="white" size="23">mdi-email</v-icon>
-            <span style="color:white; font-size:17px;text-transform: capitalize;">Give Feedback</span>
-          </v-btn>
-        </v-card-text>
+        </v-col>
+      </v-row>
 
-          </v-card>
-
-</v-container>
+    </v-container>
 
 
-        </div>
-      </div>
-    </div>
+    <v-footer style="background-color: darkblue" padless>
+      <v-container fluid>
+        <v-row no-gutters>
+          <!-- Footer Top -->
+          <v-col cols="12">
+            <div class="footer-top" style="background-color: orange; color: white; padding: 10px 0;">
+              <div class="text-center">
+                <h2 style="font-weight: normal;color:black;font-weight:900">Manage and Review Your Feedback in One Place</h2>
+              </div>
+            </div>
+          </v-col>
+
+          <!-- Footer Content -->
+          <v-col cols="12">
+            <v-container>
+              <v-row>
+                <v-col cols="12" md="2">
+                  <h3 class="white--text" style="color:orange">Feedback</h3>
+                  <ul class="footer-links">
+                    <li><a href="#" class="white--text">Submit Feedback</a></li>
+                    <li><a href="#" class="white--text">View Responses</a></li>
+                    <li><a href="#" class="white--text">Track Feedback</a></li>
+                    <li><a href="#" class="white--text">Feedback Guidelines</a></li>
+                  </ul>
+                </v-col>
+                <v-col cols="12" md="2">
+                  <h3 class="white--text" style="color:orange">Support</h3>
+                  <ul class="footer-links">
+                    <li><a href="#" class="white--text">Customer Support</a></li>
+                    <li><a href="#" class="white--text">FAQ</a></li>
+                    <li><a href="#" class="white--text">Contact Us</a></li>
+                    <li><a href="#" class="white--text">Help Center</a></li>
+                  </ul>
+                </v-col>
+                <v-col cols="12" md="2">
+                  <h3 class="white--text" style="color:orange">About Us</h3>
+                  <ul class="footer-links">
+                    <li><a href="#" class="white--text">Our Mission</a></li>
+                    <li><a href="#" class="white--text">Our Team</a></li>
+                    <li><a href="#" class="white--text">Careers</a></li>
+                    <li><a href="#" class="white--text">News & Updates</a></li>
+                  </ul>
+                </v-col>
+                <v-col cols="12" md="2">
+                  <h3 class="white--text" style="color:orange">Policies</h3>
+                  <ul class="footer-links">
+                    <li><a href="#" class="white--text">Privacy Policy</a></li>
+                    <li><a href="#" class="white--text">Terms of Service</a></li>
+                    <li><a href="#" class="white--text">Data Protection</a></li>
+                  </ul>
+                </v-col>
+                <v-col cols="12" md="2">
+                  <h3 class="white--text" style="color:orange">Resources</h3>
+                  <ul class="footer-links">
+                    <li><a href="#" class="white--text">Documentation</a></li>
+                    <li><a href="#" class="white--text">Tutorials</a></li>
+                    <li><a href="#" class="white--text">Community</a></li>
+                    <li><a href="#" class="white--text">Blog</a></li>
+                  </ul>
+                </v-col>
+                <v-col cols="12" md="2">
+                  <h3 class="white--text" style="color:orange">Contact</h3>
+                  <ul class="footer-links">
+                    <li><a href="#" class="white--text">Email Us</a></li>
+                    <li><a href="#" class="white--text">Visit Us</a></li>
+                    <li><a href="#" class="white--text">Support Hours</a></li>
+                    <li><a href="#" class="white--text">Social Media</a></li>
+                  </ul>
+                </v-col>
+              </v-row>
+            </v-container>
+          </v-col>
+
+          <!-- Footer Bottom -->
+          <v-col cols="12" class="footer-bottom" style="background-color: black; padding: 20px 0;">
+            <div class="text-center white--text">
+              <v-icon color="white" size="24" class="mx-2">mdi-facebook</v-icon>
+              <v-icon color="white" size="24" class="mx-2">mdi-twitter</v-icon>
+              <v-icon color="white" size="24" class="mx-2">mdi-linkedin</v-icon>
+              <v-icon color="white" size="24" class="mx-2">mdi-instagram</v-icon>
+              <v-icon color="white" size="24" class="mx-2">mdi-tiktok</v-icon>
+            </div>
+          </v-col>
+        </v-row>
+      </v-container>
+    </v-footer>
+
+</v-app>
   </template>
 
   <script>
@@ -133,226 +191,6 @@
   <style scoped>
 
 
-  .text-content {
-    font-size: 18px;
-    line-height: 1.6;
-    color: #333;
-  }
-
-  .content-wrapper {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 20px;
-  }
-
-  .welcome-text {
-    margin-top: 20px;
-    color: black;
-  }
-
-  .logo-image {
-    max-width: 100%;
-    height: auto;
-    margin-top: 80px;
-  }
-
-  .give-feedback-btn {
-    margin-top: 290px;
-  }
-
-  .home-btn {
-    margin-left: 1680px;
-    text-decoration: none;
-    border: 2px solid;
-  }
-
-
-  .forms-container {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-  }
-
-  .signin-signup {
-    position: absolute;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    left: 75%;
-    width: 50%;
-    transition: 1s 0.7s ease-in-out;
-    display: grid;
-    grid-template-columns: 1fr;
-    z-index: 5;
-  }
-
-  .title {
-    font-size: 2.2rem;
-    color: #444;
-    margin-bottom: 10px;
-  }
-
-  .input-field input {
-    background: none;
-    outline: none;
-    border: none;
-    line-height: 1;
-    font-weight: 600;
-    font-size: 1.1rem;
-    color: #333;
-  }
-
-  .input-field input::placeholder {
-    color: #aaa;
-    font-weight: 500;
-  }
-
-  .social-text {
-    padding: 0.7rem 0;
-    font-size: 1rem;
-  }
-
-  .social-media {
-    display: flex;
-    justify-content: center;
-  }
-
-  .social-icon {
-    height: 46px;
-    width: 46px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 0 0.45rem;
-    color: #333;
-    border-radius: 50%;
-    border: 1px solid #333;
-    text-decoration: none;
-    font-size: 1.1rem;
-    transition: 0.3s;
-  }
-
-  .social-icon:hover {
-    color: #4481eb;
-    border-color: #4481eb;
-  }
-
-  .btn {
-    width: 380px;
-    background-color: darkblue;
-    border: none;
-    outline: none;
-    height: 49px;
-    border-radius: 49px;
-    color: #fff;
-    text-transform: uppercase;
-    font-weight: 600;
-    margin: 10px 0;
-    cursor: pointer;
-    transition: 0.5s;
-  }
-
-  .btn:hover {
-    background-color: green;
-  }
-
-  .panels-container {
-    position: absolute;
-    height: 100%;
-    width: 100%;
-    top: 0;
-    left: 0;
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .container:before {
-    content: "";
-    position: absolute;
-    height:100%;
-    width: 100%;
-    right: 0%;
-    transform: translateY(0%);
-    background:darkblue;
-    transition: 1.8s ease-in-out;
-    background-position: contain;
-    z-index: 6;
-  }
-
-  .image {
-    width: 100%;
-    transition: transform 1.1s ease-in-out;
-    transition-delay: 0.4s;
-  }
-
-  .panel {
-    align-items: flex-end;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-    text-align: center;
-    z-index: 9;
-  }
-
-  .left-panel {
-    padding: 3rem 17% 2rem 12%;
-  }
-
-  .right-panel {
-    padding: 2rem 12% 12rem 10%;
-  }
-
-  .panel .content {
-    color:darkblue;
-    transition: transform 0.9s ease-in-out;
-    transition-delay: 0.6s;
-    margin-top: -220px;
-  }
-
-  .panel h3 {
-    font-weight: 600;
-    line-height: 1;
-    font-size: 1.5rem;
-    margin-left: -300px;
-  }
-
-  .panel p {
-    font-size: 0.95rem;
-    padding: 0.7rem 0;
-    margin-left: -210px;
-  }
-
-  .btn.transparent {
-    margin: 0;
-    background: none;
-    border: 2px solid #fff;
-    width: 230px;
-    height: 41px;
-    font-weight: 600;
-    font-size: 0.8rem;
-  }
-
-  .right-panel .image,
-  .right-panel .content {
-    transform: translateX(800px);
-  }
-
-  .container.sign-up-mode:before {
-    transform: translate(100%, -50%);
-    right: 52%;
-  }
-
-  .container.sign-up-mode .left-panel .image,
-  .container.sign-up-mode .left-panel .content {
-    transform: translateX(-800px);
-  }
-
-  .container.sign-up-mode .right-panel .image,
-  .container.sign-up-mode .right-panel .content {
-    transform: translateX(0%);
-  }
 
   .logo {
     margin-top: 90px;
@@ -361,4 +199,74 @@
   .v-card-title {
     font-size: 28px;
   }
+
+  .footer-top {
+  background-color: #4CAF50;
+  color: white;
+  padding: 20px 0;
+}
+
+.footer-links {
+  list-style-type: none;
+  padding: 0;
+}
+
+.footer-links li {
+  margin-bottom: 10px;
+}
+
+.footer-links a {
+  color: white;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.footer-bottom {
+  background-color: black;
+  padding: 20px 0;
+}
+
+.footer-bottom .mdi-icon {
+  margin-right: 10px;
+}
+
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animated-title {
+  animation: fadeInUp 1.5s ease-out;
+}
+
+/* Adjust font size for responsiveness */
+.v-card-title {
+  font-size: 48px;
+  font-weight: bold;
+  line-height: 1.2;
+}
+
+.v-card-title.fade-in-up {
+  animation-delay: 0.5s;
+}
+
+.text-center.fade-in-up {
+  animation-delay: 1s;
+}
+
+@media (max-width: 600px) {
+  .v-card-title {
+    font-size: 24px;
+  }
+
+  .text-center {
+    font-size: 16px;
+  }
+}
   </style>
