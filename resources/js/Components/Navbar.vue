@@ -9,7 +9,11 @@
       color="orange"
     >
       <v-list nav>
+        <v-list-item>
+            <v-img src="/Images/iLab white Logo-01.png" height="180"  ></v-img>
 
+        </v-list-item>
+<hr>
 
         <v-divider></v-divider>
         <v-list-item  prepend-icon="mdi-email" :href="route('feedback')">
@@ -23,9 +27,11 @@
     </v-navigation-drawer>
 
     <!-- App Bar -->
-    <v-app-bar app  dark flat style="background-color: darkblue">
+    <v-app-bar app  dark flat style="background-color: darkblue" elevation="0">
+
       <v-container>
         <v-row>
+
           <!-- Left Section -->
          <v-spacer></v-spacer>
 
@@ -51,12 +57,13 @@
     </v-app-bar>
 
     <!-- Additional Navigation Bar -->
-    <v-app-bar app color="orange" flat dense class="hidden-sm-and-down">
+    <v-app-bar app color="orange" flat dense class="hidden-sm-and-down" height="90" elevation="5">
       <v-container>
         <v-row>
-            <v-img src="/Images/LOGO_2.png" class="logo"  ></v-img>
+            <v-img src="/Images/LOGO_2.png" height="120"  ></v-img>
+
           <v-spacer></v-spacer>
-          <v-col >
+          <v-col class="mt-6">
             <v-btn text :href="route('feedback')" style="text-transform: capitalize;font-weight: 800;background-color: darkblue;color:white" class="mr-4">Give feedback</v-btn>
             <v-btn text :href="route('login')" style="text-transform: capitalize;font-size: 800;background-color: darkblue;color:white" >Login</v-btn>
           </v-col>
@@ -85,8 +92,7 @@ const drawer = ref(false);
 </script>
 <style scoped>
 .logo {
-  max-width: 120px;
-  height: auto;
+  max-width: 250px;
 }
 
 .v-app-bar {

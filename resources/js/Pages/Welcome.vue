@@ -32,6 +32,8 @@
         <v-col cols="12" md="10">
           <h3 class="text-center" style="color:white">Explore Feedback Categories</h3>
           <br>
+          <hr>
+          <br>
           <v-row>
             <v-col cols="12" md="3">
               <h4  style="color:orange">System Performance</h4>
@@ -81,7 +83,7 @@
         <v-row no-gutters>
           <!-- Footer Top -->
           <v-col cols="12">
-            <div class="footer-top" style="background-color: orange; color: white; padding: 10px 0;">
+            <div class="footer-top elevation-10" style="background-color: orange; color: white; padding: 10px 0;">
               <div class="text-center">
                 <h2 style="font-weight: normal;color:black;font-weight:900">Manage and Review Your Feedback in One Place</h2>
               </div>

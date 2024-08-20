@@ -26,7 +26,6 @@ use App\Http\Controllers\SendEmailController;
     Route::get('/', function () {
         return Inertia::render('Welcome', [
             'canLogin' => Route::has('login'),
-            'canRegister' => Route::has('register'),
             'laravelVersion' => Application::VERSION,
             'phpVersion' => PHP_VERSION,
         ]);
@@ -134,8 +133,6 @@ Route::put('/feedback/archive', [FeedbackController::class, 'archive']);
     })->name('updates');
 
     // Registration routes
-    Route::get('/register', [RegisteredUserController::class, 'create'])->name('register');
-    Route::post('/register', [RegisteredUserController::class, 'store'])->name('register.store');
 
     Route::get('/give_feedback', [FeedbackController::class, 'GivefeedbackPage'])->name('feedback');
     Route::post('/send-reply', [SendEmailController::class, 'sendReply'])->name('sendReply');

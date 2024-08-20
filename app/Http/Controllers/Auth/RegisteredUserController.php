@@ -74,7 +74,7 @@ class RegisteredUserController extends Controller
     //         'agree' => 'required|boolean',
     //     ]);
 
-    
+
     //     $user = User::create([
     //         'name' => $request->name,
     //         'email' => $request->email,
