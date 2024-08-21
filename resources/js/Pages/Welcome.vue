@@ -30,40 +30,41 @@
       <!-- Popular Links Section -->
       <v-row class="d-flex justify-center" style="background-color:darkblue; padding: 40px 0;">
         <v-col cols="12" md="10">
-          <h3 class="text-center" style="color:white">Explore Feedback Categories</h3>
+          <h3 class="text-center" style="color:white">What to share</h3>
           <br>
           <hr>
           <br>
           <v-row>
             <v-col cols="12" md="3">
-              <h4  style="color:orange">System Performance</h4>
+              <h4  style="color:orange">Ideas</h4>
               <ul class="footer-links">
-                <li><a href="#">Loading Issues</a></li>
-                <li><a href="#">Navigation Problems</a></li>
-                <li><a href="#">System Errors</a></li>
-                <li><a href="#">Other Issues</a></li>
+                <li><a href="#">Tech Innovations</a></li>
+    <li><a href="#">Research Proposals</a></li>
+    <li><a href="#">Department Improvements</a></li>
+    <li><a href="#">Other Suggestions</a></li>
               </ul>
             </v-col>
             <v-col cols="12" md="3">
-              <h4 style="color:orange">User Experience</h4>
+              <h4 style="color:orange">Feedback</h4>
               <ul class="footer-links">
-                <li><a href="#">UI Design</a></li>
-                <li><a href="#">User Interaction</a></li>
-                <li><a href="#">Accessibility</a></li>
-                <li><a href="#">Feedback & Suggestions</a></li>
+                <li><a href="#">Complaints</a></li>
+                <li><a href="#">Suggestions</a></li>
+                <li><a href="#">Compliments</a></li>
+                <li><a href="#">Other Feedback</a></li>
               </ul>
             </v-col>
             <v-col cols="12" md="3">
-              <h4 style="color:orange">Customer Support</h4>
+              <h4 style="color:orange">Issues</h4>
               <ul class="footer-links">
-                <li><a href="#">Response Time</a></li>
-                <li><a href="#">Support Quality</a></li>
-                <li><a href="#">Communication</a></li>
-                <li><a href="#">Follow-Up</a></li>
+                <li><a href="#">Research Assistance</a></li>
+    <li><a href="#">Technical Issues</a></li>
+    <li><a href="#">Innovation Projects</a></li>
+    <li><a href="#">Collaboration Inquiries</a></li>
+    <li><a href="#">Other Departmental Issues</a></li>
               </ul>
             </v-col>
             <v-col cols="12" md="3">
-              <h4 style="color:orange">General Feedback</h4>
+              <h4 style="color:orange">Suggestions</h4>
               <ul class="footer-links">
                 <li><a href="#">Overall Satisfaction</a></li>
                 <li><a href="#">Improvement Areas</a></li>
@@ -85,7 +86,7 @@
           <v-col cols="12">
             <div class="footer-top elevation-10" style="background-color: orange; color: white; padding: 10px 0;">
               <div class="text-center">
-                <h2 style="font-weight: normal;color:black;font-weight:900">Manage and Review Your Feedback in One Place</h2>
+                <h2 style="font-weight: normal;color:black;font-weight:900;font-size: clamp(14px, 4vw,22px);">All feedback submitted will be treated with utmost confidentiality</h2>
               </div>
             </div>
           </v-col>
@@ -97,8 +98,7 @@
                 <v-col cols="12" md="2">
                   <h3 class="white--text" style="color:orange">Feedback</h3>
                   <ul class="footer-links">
-                    <li><a href="#" class="white--text">Submit Feedback</a></li>
-                    <li><a href="#" class="white--text">View Responses</a></li>
+                    <li><a :href="route('feedback')" class="white--text">Submit Feedback</a></li>
                     <li><a href="#" class="white--text">Track Feedback</a></li>
                     <li><a href="#" class="white--text">Feedback Guidelines</a></li>
                   </ul>

@@ -48,7 +48,7 @@
             <v-btn icon class="hidden-sm-and-down">
               <v-icon  color="white">mdi-magnify</v-icon>
             </v-btn>
-            <v-btn icon class="hidden-sm-and-down">
+            <v-btn icon class="hidden-sm-and-down" href="https://ilabafrica.strathmore.edu/">
               <v-icon  color="white">mdi-web</v-icon>
             </v-btn>
           </v-col>
