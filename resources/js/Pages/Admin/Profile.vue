@@ -1,7 +1,7 @@
 <template>
     <Head title="Dashboard" />
     <AdminLayout :categories="categories"  :notifications="notifications">
-      <v-container width="100%" style="max-width: 1600px;">
+      <v-container fluid>
         <v-row>
           <!-- Profile Card Section -->
           <v-col cols="12" md="3" class="mb-4 ">

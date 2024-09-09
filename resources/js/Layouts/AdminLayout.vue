@@ -71,7 +71,6 @@
             </template>
 
             <v-list-item :href="route('adminsettings')" prepend-icon="mdi-account-settings" title="Account Settings" color="white" elevation="0" active-class="active-button"></v-list-item>
-            <v-list-item :href="route('adminnotification')" prepend-icon="mdi-bell" title="Notifications Settings" color="white" elevation="0" active-class="active-button"></v-list-item>
             <v-list-item :href="route('profile')" prepend-icon="mdi-account" title="My profile" color="white" elevation="0" active-class="active-button"></v-list-item>
 
 
@@ -98,7 +97,7 @@
             variant="outlined"
             ></v-text-field> -->
 
-            <v-chip label elevation="5" class="mr-4">
+            <v-chip label elevation="0" class="mr-4">
             <v-switch
                 v-model="isDarkMode"
                 :label="isDarkMode ? 'Dark Mode' : 'Light Mode'"
@@ -170,6 +169,8 @@ function navigateToCategory(url) {
 
 const items = [
     { text: 'Dashboard', routeName: 'admin', icon: 'mdi-view-dashboard' },
+    { text: 'Notifications', routeName: 'my_notifications', icon: 'mdi-bell' },
+
 ];
 </script>
     <style scoped>

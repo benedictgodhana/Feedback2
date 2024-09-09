@@ -2,7 +2,7 @@
     <Head title="Dashboard" />
 
     <AdminLayout :categories="categories">
-        <v-container max-width="1900" style="margin-top: -40px">
+        <v-container max-width="1900" style="margin-top: -40px" fluid>
             <!-- Main content of the page -->
             <v-card width=100% elevation="0">
                 <v-card-title
@@ -552,27 +552,39 @@ export default {
                   }))
                 : [];
         });
-
         const filteredFeedbacks = computed(() => {
-            return feedbacks.value.filter((feedback) => {
-                // Convert feedback.created_at to a Date object
-                const feedbackDate = new Date(feedback.created_at);
-                const startDate = dateRange.value.startDate ? new Date(dateRange.value.startDate) : null;
-                const endDate = dateRange.value.endDate ? new Date(dateRange.value.endDate) : null;
+    return feedbacks.value.filter((feedback) => {
+        // Convert feedback.created_at to a Date object
+        const feedbackDate = new Date(feedback.created_at);
+        const startDate = dateRange.value.startDate ? new Date(dateRange.value.startDate) : null;
+        const endDate = dateRange.value.endDate ? new Date(dateRange.value.endDate) : null;
 
-                return (
-                    (!startDate || feedbackDate >= startDate) &&
-                    (!endDate || feedbackDate <= endDate) &&
-                    (!selectedCategory.value || feedback.category_id === selectedCategory.value) &&
-                    (!selectedSubcategory.value || feedback.subcategory_id === selectedSubcategory.value) &&
-                    (!selectedStatus.value || feedback.status === selectedStatus.value) && // Filter by status
-                    (feedback.subject.toLowerCase().includes(search.value.toLowerCase()) ||
-                     feedback.name.toLowerCase().includes(search.value.toLowerCase()) ||
-                     feedback.email.toLowerCase().includes(search.value.toLowerCase()) ||
-                     feedback.feedback.toLowerCase().includes(search.value.toLowerCase()))
-                );
-            });
-        });
+        // Check for valid feedback properties and filter
+        const isValidFeedback = feedback && feedback.created_at;
+        const isWithinDateRange = isValidFeedback &&
+            (!startDate || feedbackDate >= startDate) &&
+            (!endDate || feedbackDate <= endDate);
+        const matchesCategory = !selectedCategory.value || feedback.category_id === selectedCategory.value;
+        const matchesSubcategory = !selectedSubcategory.value || feedback.subcategory_id === selectedSubcategory.value;
+        const matchesStatus = !selectedStatus.value || feedback.status === selectedStatus.value;
+
+        // Handle possible null values for feedback fields in search
+        const feedbackSubject = feedback.subject ? feedback.subject.toLowerCase() : '';
+        const feedbackName = feedback.name ? feedback.name.toLowerCase() : '';
+        const feedbackEmail = feedback.email ? feedback.email.toLowerCase() : '';
+        const feedbackContent = feedback.feedback ? feedback.feedback.toLowerCase() : '';
+        const searchTerm = search.value.toLowerCase();
+
+        const matchesSearch = search.value ?
+            feedbackSubject.includes(searchTerm) ||
+            feedbackName.includes(searchTerm) ||
+            feedbackEmail.includes(searchTerm) ||
+            feedbackContent.includes(searchTerm)
+        : true;
+
+        return isValidFeedback && isWithinDateRange && matchesCategory && matchesSubcategory && matchesStatus && matchesSearch;
+    });
+});
 
         const getSubcategoryName = (id) => {
             const category = feedbackcategories.value.find((cat) =>

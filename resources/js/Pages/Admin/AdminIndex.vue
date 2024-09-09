@@ -10,7 +10,7 @@
                         <v-card-title style="background-color: darkblue; color:white">All Feedback</v-card-title>
                         <v-divider></v-divider>
                         <v-card-text style="font-size:18px;font-weight: 700;">{{ totalFeedback }}</v-card-text>
-                        <v-btn width="100%" color="orange" style="text-transform: none;" >View Today's Feedback</v-btn>
+                        <v-btn width="100%" color="orange" style="text-transform: none;" > Today's Feedback</v-btn>
                     </v-card>
                 </v-col>
 
@@ -19,7 +19,7 @@
                         <v-card-title style="background-color: darkblue; color:white">Today's Feedback</v-card-title>
                         <v-divider></v-divider>
                         <v-card-text style="font-size:18px;font-weight: 700;">{{ todaysFeedback }}</v-card-text>
-                        <v-btn width="100%" color="orange" style="text-transform: none;">View Today's Feedback</v-btn>
+                        <v-btn width="100%" color="orange" style="text-transform: none;">Today's Feedback</v-btn>
                     </v-card>
                 </v-col>
 
@@ -28,7 +28,7 @@
                         <v-card-title style="background-color: darkblue; color:white">This Week's Feedback</v-card-title>
                         <v-divider></v-divider>
                         <v-card-text style="font-size:18px;font-weight: 700;">{{ weeksFeedback }}</v-card-text>
-                        <v-btn width="100%" color="orange" style="text-transform: none;">View This Week's Feedback</v-btn>
+                        <v-btn width="100%" color="orange" style="text-transform: none;"> This Week's Feedback</v-btn>
                     </v-card>
                 </v-col>
 
@@ -37,7 +37,7 @@
                         <v-card-title style="background-color: darkblue; color:white">Monthly Feedback</v-card-title>
                         <v-divider></v-divider>
                         <v-card-text style="font-size:18px;font-weight: 700;">{{ monthlyFeedback }}</v-card-text>
-                        <v-btn width="100%" color="orange" style="text-transform: none;">View Monthly Feedback</v-btn>
+                        <v-btn width="100%" color="orange" style="text-transform: none;"> Monthly Feedback</v-btn>
                     </v-card>
                 </v-col>
 

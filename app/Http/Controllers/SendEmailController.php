@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\SendEmailUserMail;
 use Inertia\Inertia;
 use App\Models\Reply;
 use Illuminate\Http\Request;
@@ -31,5 +32,19 @@ class SendEmailController extends Controller
             'email' => $email,
             'message' => $message,
         ]);
+    }
+
+
+
+    public function sendTestEmail()
+    {
+        $user = new \stdClass();
+        $user->email = 'allanmurimi96@gmail.com';
+        $user->send_subject = 'Test Email';
+        $user->send_message = 'This is a test email.';
+
+        Mail::to($user->email)->send(new SendEmailUserMail($user));
+
+        return 'Test email sent!';
     }
 }

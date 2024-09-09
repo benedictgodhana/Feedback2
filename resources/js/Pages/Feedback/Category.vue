@@ -2,7 +2,7 @@
   <Head title="Dashboard" />
 
   <AdminLayout :categories="categories">
-    <v-container>
+    <v-container fluid>
       <!-- Main content of the page -->
       <v-card max-width="1500" elevation="0">
         <v-card-title class="text-center" style="background-color: orange; color: white; ">
@@ -400,31 +400,38 @@ const subcategories = ref([]);
 feedbacks.value = props.feedbacks;
 categoryName.value = props.category;
 subcategories.value = props.subcategories;
-
 const filteredFeedbacks = computed(() => {
   return feedbacks.value
     .filter(feedback => {
-      const feedbackDate = new Date(feedback.created_at); // Assuming feedback has a 'date' property
+      // Ensure feedback is valid and contains the necessary properties
+      if (!feedback || !feedback.created_at) return false;
+
+      const feedbackDate = new Date(feedback.created_at); // Ensure created_at is a valid date
       const startDate = dateRange.value.startDate ? new Date(dateRange.value.startDate) : null;
       const endDate = dateRange.value.endDate ? new Date(dateRange.value.endDate) : null;
 
-      return (
-        (!startDate || feedbackDate >= startDate) &&
-        (!endDate || feedbackDate <= endDate) &&
-        (!selectedStatus.value || feedback.status === selectedStatus.value) &&
-        (!selectedSubcategory.value || feedback.subcategory_id === selectedSubcategory.value) &&
-        (search.value ? feedback.subject.toLowerCase().includes(search.value.toLowerCase()) ||
-                       feedback.name.toLowerCase().includes(search.value.toLowerCase()) ||
-                       feedback.email.toLowerCase().includes(search.value.toLowerCase()) ||
-                       feedback.feedback.toLowerCase().includes(search.value.toLowerCase())
-                       : true)
-      );
+      // Apply filters
+      const isWithinDateRange = (!startDate || feedbackDate >= startDate) && (!endDate || feedbackDate <= endDate);
+      const matchesStatus = !selectedStatus.value || feedback.status === selectedStatus.value;
+      const matchesSubcategory = !selectedSubcategory.value || feedback.subcategory_id === selectedSubcategory.value;
+
+      // Ensure feedback.email, feedback.subject, feedback.name, and feedback.feedback are valid strings
+      const matchesSearch = search.value
+        ? (feedback.subject && feedback.subject.toLowerCase().includes(search.value.toLowerCase())) ||
+          (feedback.name && feedback.name.toLowerCase().includes(search.value.toLowerCase())) ||
+          (feedback.email && feedback.email.toLowerCase().includes(search.value.toLowerCase())) ||
+          (feedback.feedback && feedback.feedback.toLowerCase().includes(search.value.toLowerCase()))
+        : true;
+
+      return isWithinDateRange && matchesStatus && matchesSubcategory && matchesSearch;
     })
     .map(feedback => ({
       ...feedback,
       subcategory_name: feedback.subcategory ? feedback.subcategory.name : 'No Subcategory'
     }));
 });
+
+
 
 
 // Methods

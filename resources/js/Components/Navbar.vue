@@ -42,14 +42,12 @@
             </v-btn>
 
 
-            <v-btn icon class="hidden-sm-and-down">
-              <v-icon color="white">mdi-help-circle-outline</v-icon>
-            </v-btn>
-            <v-btn icon class="hidden-sm-and-down">
-              <v-icon  color="white">mdi-magnify</v-icon>
-            </v-btn>
-            <v-btn icon class="hidden-sm-and-down" href="https://ilabafrica.strathmore.edu/">
+
+            <v-btn icon class="hidden-sm-and-down mr-4" href="https://ilabafrica.strathmore.edu/">
               <v-icon  color="white">mdi-web</v-icon>
+            </v-btn>
+            <v-btn icon class="hidden-sm-and-down"  :href="route('login')" style="text-transform: capitalize;color:white">
+              <v-icon  color="white">mdi-login</v-icon>Login
             </v-btn>
           </v-col>
         </v-row>
@@ -57,15 +55,14 @@
     </v-app-bar>
 
     <!-- Additional Navigation Bar -->
-    <v-app-bar app color="orange" flat dense class="hidden-sm-and-down" height="90" elevation="5">
+    <v-app-bar app color="orange" flat dense class="hidden-sm-and-down" height="90" elevation="0">
       <v-container>
         <v-row>
             <v-img src="/Images/LOGO_2.png" height="120"  ></v-img>
 
           <v-spacer></v-spacer>
           <v-col class="mt-6">
-            <v-btn text :href="route('feedback')" style="text-transform: capitalize;font-weight: 800;background-color: darkblue;color:white" class="mr-4">Give feedback</v-btn>
-            <v-btn text :href="route('login')" style="text-transform: capitalize;font-size: 800;background-color: darkblue;color:white" >Login</v-btn>
+
           </v-col>
         </v-row>
       </v-container>

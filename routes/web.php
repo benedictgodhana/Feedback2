@@ -4,15 +4,17 @@
     use App\Http\Controllers\Auth\RegisteredUserController;
     use App\Http\Controllers\ProfileController;
     use App\Http\Controllers\ContributionController;
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\FeedbackController;
-use Illuminate\Foundation\Application;
+    use App\Http\Controllers\DashboardController;
+    use App\Http\Controllers\FeedbackController;
+    use Illuminate\Foundation\Application;
     use Illuminate\Support\Facades\Route;
     use Inertia\Inertia;
     use App\Http\Controllers\UserController;
     use App\Http\Controllers\RoleController;
     use App\Http\Controllers\memberController;
-use App\Http\Controllers\SendEmailController;
+    use App\Http\Controllers\SendEmailController;
+    use App\Mail\SendEmailUserMail;
+    use Illuminate\Support\Facades\Mail;
 
     /*
     |--------------------------------------------------------------------------
@@ -67,37 +69,34 @@ use App\Http\Controllers\SendEmailController;
         Route::post('/users', [UserController::class, 'store']);
 
         Route::delete('/users/{id}', [UserController::class, 'destroy']);
-
-
-
     });
 
     Route::middleware(['auth', 'role:admin'])->group(function () {
-    Route::get('/admin',[AdminController::class,'index'])->name('admin.index');
+        Route::get('/admin', [AdminController::class, 'index'])->name('admin.index');
 
-    Route::get('/all-feedback', [FeedbackController::class, 'AllFeedback'])->name('feedback.index');
+        Route::get('/all-feedback', [FeedbackController::class, 'AllFeedback'])->name('feedback.index');
 
-    Route::get('/profile',[AdminController::class,'adminProfile'])->name('profile');
+        Route::get('/profile', [AdminController::class, 'adminProfile'])->name('profile');
 
-    Route::get('/my_contribution',[AdminController::class,'adminContribution'])->name('admincontribution');
+        Route::get('/my_contribution', [AdminController::class, 'adminContribution'])->name('admincontribution');
 
-    Route::get('/my_notifications',[AdminController::class,'adminNotification'])->name('adminnotification');
+        Route::get('/my_notifications', [AdminController::class, 'adminNotification'])->name('adminnotification');
 
-    Route::get('/my_settings',[AdminController::class,'adminSetting'])->name('adminsettings');
+        Route::get('/my_settings', [AdminController::class, 'adminSetting'])->name('adminsettings');
 
-// web.php
-    Route::put('/feedback/{id}', [FeedbackController::class, 'update']);
+        // web.php
+        Route::put('/feedback/{id}', [FeedbackController::class, 'update']);
 
         // In web.php
-     Route::get('/feedback/category/{categoryId}', [FeedbackController::class, 'show'])->name('category.feedback');
+        Route::get('/feedback/category/{categoryId}', [FeedbackController::class, 'show'])->name('category.feedback');
 
 
-// routes/web.php or routes/api.php
-Route::put('/feedback/archive', [FeedbackController::class, 'archive']);
+        // routes/web.php or routes/api.php
+        Route::put('/feedback/archive', [FeedbackController::class, 'archive']);
 
 
 
-    Route::get('/graph', [AdminController::class, 'graph']);
+        Route::get('/graph', [AdminController::class, 'graph']);
 
         // Route::get('/users', function () {
         //     return Inertia::render('Users');
@@ -107,11 +106,11 @@ Route::put('/feedback/archive', [FeedbackController::class, 'archive']);
         //     return Inertia::render('ManageRoles');
         // })->name('manage-roles');
 
-    // Route::get('/contributions', function () {
-    //     return Inertia::render('Contributions');
-    // });
+        // Route::get('/contributions', function () {
+        //     return Inertia::render('Contributions');
+        // });
 
-    // Default dashboard for authenticated users
+        // Default dashboard for authenticated users
 
     });
 
@@ -139,4 +138,11 @@ Route::put('/feedback/archive', [FeedbackController::class, 'archive']);
 
     Route::post('/feedback', [FeedbackController::class, 'store'])->name('feedback.store');
 
-    require __DIR__.'/auth.php';
+
+
+
+
+    Route::get('/test-mail', [SendEmailController::class, 'sendTestEmail']);
+
+
+    require __DIR__ . '/auth.php';
