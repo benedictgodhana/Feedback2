@@ -141,7 +141,6 @@
         </v-card>
     </v-container>
 </template>
-
 <script>
 import { ref, computed, watch } from 'vue';
 import { Head, useForm } from '@inertiajs/vue3';
@@ -257,6 +256,7 @@ export default {
     },
 };
 </script>
+
 
 <style>
 /* Additional styles for v-alert if needed */
